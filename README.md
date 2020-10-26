@@ -10,7 +10,7 @@ In the world we live in today, we have a lot of restrictions. For some companies
 That's why I wanted to create an AR application, where people can see the animals through their phone or tablet. Users will be able to read information about the animal, save their favorites, ask questions and learn more about the race of the animal. Next it will be possible to book an appointment with the shelter to visit the animal.
 
 # Deliverables
-/
+A smartphone/tablet application provided with AR.
 
 # Blog URL
 https://elkedejonckere.wixsite.com/ppproject
