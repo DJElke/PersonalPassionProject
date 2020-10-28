@@ -10,7 +10,24 @@ In the world we live in today, we have a lot of restrictions. For some companies
 That's why I wanted to create an AR application, where people can see the animals through their phone or tablet. Users will be able to read information about the animal, save their favorites, ask questions and learn more about the race of the animal. Next it will be possible to book an appointment with the shelter to visit the animal.
 
 # Deliverables
-A smartphone/tablet application provided with AR.
+- An augmented reality application where users can browse and see shelter animals.
+- The user can save the animals in a favorite folder.
+- The user is able to donate.
+- The user is able to plan an appointment.
+- The user is able to ask more information about the animal.
+- The user can sign to adopt.
+- The user can (if possible) go to a live view of the animal in the shelter
+
+# Technology
+Unity
+
+# Planning
+- Week 1: Research Unity, proof of concept
+- Week 2: Designing the animals
+- Week 3: Designing the enivornment
+- Week 4: Final touches application + prepairing the jury presentation
+- Week 5: Jury
+
 
 # Blog URL
 https://elkedejonckere.wixsite.com/ppproject
