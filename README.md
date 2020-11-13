@@ -15,9 +15,9 @@ This application will be a fun and alternative way for people who want to edit t
 - Being able to upload the endresult to social media.
 
 # Technology
--BASNet or U-2-Net
--Python
--iOS/Swift
+- BASNet or U-2-Net
+- Python
+- iOS/Swift
 
 # Planning
 - Week 1: Research BASNet, U-2-Net, Python and iOS with these technologies. Making wireframes of the application.
