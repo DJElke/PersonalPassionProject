@@ -2,31 +2,29 @@
 Personal Passion Project for Expert Development, Devine.
 
 # The Contractor
-Dier onder Dak VZW
+Myself.
 
 # Core Project Statement
-In the world we live in today, we have a lot of restrictions. For some companies these restrictions can be fatal, for example animal shelters. A lot of people will delay or cancel their visit to an animal shelter. It isn't attractive to go to such places. That's why I wanted to help the animal shelters and give them an alternative to present their pets to potential adopters. Also, for the visitors it can be a first impression of the animal they want to adopt. 
-
-That's why I wanted to create an AR application, where people can see the animals through their phone or tablet. Users will be able to read information about the animal, save their favorites, ask questions and learn more about the race of the animal. Next it will be possible to book an appointment with the shelter to visit the animal.
+This application will be a fun and alternative way for people who want to edit themselves or other objects into photos. They won't need to buy Photoshop or have experience using Photoshop. The application will take a picture of the person/object they want to paste onto a background image. The taken image will provide a cut-out of themselves or the object with a transparent background. This makes it easy for the user to just use this cut-out on the background image. When this image is taken, they can upload a background image to the editor application. Then they can adjust the cut-out by resizing and modifying the lightening so it blends in with the background image. The application will ask and bring out the creativity of the users. There are endless possibilities.
 
 # Deliverables
-- An augmented reality application where users can browse and see shelter animals.
-- The user can save the animals in a favorite folder.
-- The user is able to donate.
-- The user is able to plan an appointment.
-- The user is able to ask more information about the animal.
-- The user can sign to adopt.
-- The user can (if possible) go to a live view of the animal in the shelter
+- Taking a photo which will cut-out the person or object and will provide a new image of that cut-out without a background (transparent).
+- Being able to upload photos.
+- Being able to edit and adjust the size of an image.
+- Being able to edit and adjust the lightening and other properties of the image.
+- Being able to upload the endresult to social media.
 
 # Technology
-Unity
+BASNet or U-2-Net
+Python
+iOS
 
 # Planning
-- Week 1: Research Unity, proof of concept
-- Week 2: Designing the animals
-- Week 3: Designing the enivornment
-- Week 4: Final touches application + prepairing the jury presentation
-- Week 5: Jury
+- Week 1: Research BASNet, U-2-Net, Python and iOS with these technologies. Making wireframes of the application.
+- Week 2: Design of the application and trying out the technologies with own images, making of of the application in Swift.
+- Week 3: Programming the core functionalities in Swift and applying BASNet/U-2-Net.
+- Week 4: Programming the adjustements of the images + preparing for the jury.
+- Week 5: Final touches + jury.
 
 
 # Blog URL
