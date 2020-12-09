@@ -76,7 +76,7 @@
     .camera__options{
         right: 5%;
         top: 5%;
-        width: 50px;
+        width: 30px;
         height: auto;
         z-index: 9;
         position: fixed;
@@ -93,8 +93,8 @@
     .camera__options--icon{
         width: 75%;
         height: auto;
-        padding-top: 15px;
-        padding-bottom: 15px;
+        padding-top: 12px;
+        padding-bottom: 12px;
         position:relative;
     }
 </style>
