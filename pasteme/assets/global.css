@@ -3,6 +3,16 @@
 	display: none;
 }
 
+.backbtn{
+	left: 5%;
+	top: 5%;
+	height: 30px;
+	width: 48px;
+	z-index: 9;
+	display: flex;
+	position: fixed;
+}
+
 /* GLOBAL */
 html, body {
 	position: relative;

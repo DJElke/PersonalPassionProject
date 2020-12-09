@@ -20,6 +20,16 @@
 </script>
 
 <main class="camera">
+    <!-- back button -->
+    <img class="backbtn" src="/icons/back-white.svg" alt="back"/>
+
+    <!-- camera options -->
+    <div class="camera__options">
+        <img class="camera__options--icon" src="/icons/flip-white.svg" alt="flip"/>
+        <img class="camera__options--icon" src="/icons/flash-white.svg" alt="flash"/>
+        <img class="camera__options--icon" src="/icons/stopwatch-white.svg" alt="stopwatch"/>
+    </div>
+
     <!-- show the camera output -->
     <video class="camera__view" bind:this={video} width={width} height={height} playsinline autoplay muted></video>
 
@@ -61,6 +71,31 @@
     .camera__icon{
         width: 75%;
         height: auto;
+    }
+
+    .camera__options{
+        right: 5%;
+        top: 5%;
+        width: 50px;
+        height: auto;
+        z-index: 9;
+        position: fixed;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: #112140; 
+        border-radius: 40px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .camera__options--icon{
+        width: 75%;
+        height: auto;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        position:relative;
     }
 </style>
 
