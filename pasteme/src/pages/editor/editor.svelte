@@ -76,7 +76,7 @@
     .camera__options{
         right: 5%;
         top: 5%;
-        width: 30px;
+        width: 35px;
         height: auto;
         z-index: 9;
         position: fixed;
