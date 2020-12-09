@@ -4,18 +4,10 @@
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    let canvas, video;
-    let ctx;
+    let video;
 
     onMount(async() => {
-        ctx = canvas.getContext('2d');
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-        video = document.createElement('video');
-        video.setAttribute('autoplay', '');
-        video.setAttribute('muted', '');
-        video.setAttribute('playsinline', '');  
-        video.objectfit = "cover";
-        video.height = height;
         video.srcObject = stream;
 
         if (!video.captureStream) {
@@ -25,18 +17,12 @@
         console.log(video);
 
         video.play();
-        requestAnimationFrame(draw);
     });
-
-    const draw = () => {
-        ctx.drawImage(video, 0,0, width, height);
-        requestAnimationFrame(draw);
-    };
 
 </script>
 
 <main class="camera">
-    <canvas class="camera__view" bind:this={canvas} width={width} height={height}></canvas>
+    <video class="camera__view" bind:this={video} width={width} height={height} playsinline autoplay muted></video>
 </main>
 
 <style>
