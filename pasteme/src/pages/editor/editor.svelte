@@ -14,6 +14,7 @@
         video.muted = true;
         video.autoplay = true;
         video.playsInline = true;
+        video.loop = true;
         video.objectfit = "cover";
         video.height = height;
         video.srcObject = stream;
