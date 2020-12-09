@@ -111,7 +111,7 @@
 
     .camera__view--rear{
         transform: scaleX(-1);
-        filter: FlipV;
+        filter: FlipH;
     }
 
     .camera__trigger{
