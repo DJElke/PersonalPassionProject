@@ -13,7 +13,7 @@
         video = document.createElement('video');
         video.muted = true;
         video.autoplay = true;
-        video.playsinline = true;
+        video.setAttribute('webkit-playsinline', 'webkit-playsinline');
         video.objectfit = "cover";
         video.height = height;
         video.srcObject = stream;
@@ -21,6 +21,8 @@
         if (!video.captureStream) {
             video.captureStream = () => stream;
         }
+
+        console.log(video);
 
         video.play();
         requestAnimationFrame(draw);
