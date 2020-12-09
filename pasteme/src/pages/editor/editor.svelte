@@ -1,6 +1,6 @@
 <script>
     import { onMount } from 'svelte';
-    
+
     const width = window.innerWidth;
     const height = window.innerHeight;
 
@@ -27,7 +27,7 @@
     });
 
     const draw = () => {
-        ctx.drawImage(video, 0,0);
+        ctx.drawImage(video, 0,0, width, height);
         requestAnimationFrame(draw);
     };
 

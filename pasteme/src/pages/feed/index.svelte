@@ -75,11 +75,11 @@
   
     .splashTitle{
         color: #9FCCEB;
-        font-family: SourceSansPro-ExtraLight;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-weight: 200;
         margin-top: 0.5rem;
         padding: 0;
         text-align: center;
-        font-weight: 100;
         font-size: 36px;
     }
   
@@ -106,7 +106,8 @@
   
     .feedTitle{
         color: #5F8FC3;
-        font-family: LibreBaskerville-Bold;
+        font-family: 'Libre Baskerville', serif;
+        font-weight: 700;
         font-size: 24px;
         text-align: center;
     }
