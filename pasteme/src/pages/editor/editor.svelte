@@ -41,8 +41,7 @@
 
     const initializeCamera = async() => {
         stopVideoStream();
-        changeFacingMode();
-        // constraints.video.facingMode = useFrontCamera ? "user" : "environment";
+        constraints.video.facingMode = useFrontCamera ? "user" : "environment";
         try{
             stream = await navigator.mediaDevices.getUserMedia(constraints);
             video.srcObject = stream;
@@ -55,7 +54,7 @@
         } catch(e){
             alert('Could not access the camera');
         }
-        console.log(constraints.facingMode);
+        console.log(constraints.video.facingMode);
     };
 
     const changeFacingMode = () => {
@@ -70,7 +69,6 @@
     const flipCamera = () => {
         useFrontCamera = !useFrontCamera;
         initializeCamera();
-        console.log(constraints);
     };
 </script>
 
