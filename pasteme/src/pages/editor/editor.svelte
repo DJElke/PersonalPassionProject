@@ -13,7 +13,7 @@
         video = document.createElement('video');
         video.muted = true;
         video.autoplay = true;
-        video.setAttribute('webkit-playsinline', 'webkit-playsinline');
+        video.playsInline = true;
         video.objectfit = "cover";
         video.height = height;
         video.srcObject = stream;
