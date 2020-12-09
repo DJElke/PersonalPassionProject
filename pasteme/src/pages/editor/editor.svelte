@@ -4,19 +4,62 @@
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    let video;
+    let video, stream;
+    let useFrontCamera = true;
+
+    const constraints = {
+        video: true, 
+        audio: false, 
+        facingMode: "user"
+    };
+
+    const stopVideoStream = () => {
+        if(stream){
+            stream.getTracks().forEach((track) => {
+                track.stop();
+            });
+        }
+    };
 
     onMount(async() => {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-        video.srcObject = stream;
-
-        if (!video.captureStream) {
-            video.captureStream = () => stream;
+        if(!"mediaDevices" in navigator || !"getUserMedia" in navigator.mediaDevices){
+            alert("Camera API is not available in your browser");
+            return;
         }
-
-        video.play();
+        initializeCamera();
     });
 
+    const initializeCamera = async() => {
+        stopVideoStream();
+        changeFacingMode();
+        // constraints.video.facingMode = useFrontCamera ? "user" : "environment";
+        try{
+            stream = await navigator.mediaDevices.getUserMedia(constraints);
+            video.srcObject = stream;
+
+            if (!video.captureStream) {
+                video.captureStream = () => stream;
+            }
+
+            video.play();
+        } catch(e){
+            alert('Could not access the camera');
+        }
+    };
+
+    const changeFacingMode = () => {
+        if(useFrontCamera){
+            constraints.facingMode = "user";
+        }
+        else{
+            constraints.facingMode = "environment";
+        }
+    };
+
+    const flipCamera = () => {
+        useFrontCamera = !useFrontCamera;
+        initializeCamera();
+    };
 </script>
 
 <main class="camera">
@@ -25,7 +68,7 @@
 
     <!-- camera options -->
     <div class="camera__options">
-        <img class="camera__options--icon" src="/icons/flip-white.svg" alt="flip"/>
+        <img on:click={flipCamera} class="camera__options--icon" src="/icons/flip-white.svg" alt="flip"/>
         <img class="camera__options--icon" src="/icons/flash-white.svg" alt="flash"/>
         <img class="camera__options--icon" src="/icons/stopwatch-white.svg" alt="stopwatch"/>
     </div>
