@@ -8,9 +8,19 @@
     let useFrontCamera = true;
 
     const constraints = {
-        video: true, 
+        video: {
+            width: {
+                min: 1280,
+                ideal: 1920,
+                max: 2560,
+            },
+            height: {
+                min: 720,
+                ideal: 1080,
+                max: 1440
+            },
+        }, 
         audio: false, 
-        facingMode: "user"
     };
 
     const stopVideoStream = () => {
@@ -45,20 +55,22 @@
         } catch(e){
             alert('Could not access the camera');
         }
+        console.log(constraints.facingMode);
     };
 
     const changeFacingMode = () => {
         if(useFrontCamera){
-            constraints.facingMode = "user";
+            constraints.video.facingMode = "user";
         }
         else{
-            constraints.facingMode = "environment";
+            constraints.video.facingMode = "environment";
         }
     };
 
     const flipCamera = () => {
         useFrontCamera = !useFrontCamera;
         initializeCamera();
+        console.log(constraints);
     };
 </script>
 
