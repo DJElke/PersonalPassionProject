@@ -11,10 +11,9 @@
         ctx = canvas.getContext('2d');
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
         video = document.createElement('video');
-        video.muted = true;
-        video.autoplay = true;
-        video.playsInline = true;
-        video.loop = true;
+        video.setAttribute('autoplay', '');
+        video.setAttribute('muted', '');
+        video.setAttribute('playsinline', '');  
         video.objectfit = "cover";
         video.height = height;
         video.srcObject = stream;
