@@ -5,11 +5,18 @@
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    let video, stream, cameraView, flash, timer, frontFlash;
+    let video, stream, cameraView, flash, timer;
+    let frontFlash, timerCountdown, countdown;
 
     let useFrontCamera = true;
     let useFlash = false;
     let useTimer = false;
+
+    // timer variables
+    const TIME_LIMIT = 6;
+    let timePassed = 0;
+    let timeLeft = TIME_LIMIT;
+    let timerInterval = null;
 
     const constraints = {
         video: {
@@ -45,9 +52,11 @@
         flash = document.querySelector('.flash');
         frontFlash = document.querySelector('.frontFlash');
         timer = document.querySelector('.timer');
+        timerCountdown = document.querySelector('.timerCountdown');
 
-        //hide the frontFlash div
+        //hide the frontFlash, timerCountdown div
         frontFlash.classList.add('display-none');
+        timerCountdown.classList.add('display-none');
 
         initializeCamera();
     });
@@ -89,22 +98,51 @@
 
     const setTimer = () => {
         useTimer = !useTimer;
-        // change icon's path
-        timer.src = useTimer ? "/icons/stopwatch-white.svg" : "/icons/stopwatchset-light.svg";
+        // change icon's src 
+        timer.src = useTimer ? "/icons/stopwatchset-light.svg" : "/icons/stopwatch-white.svg";
     };
 
+    const clearTimer = () => {
+        clearInterval(timerInterval);
+    }
+
     const takePicture = () => {
-        if(useFlash || useTimer){
-            if(useFrontCamera){
-                frontFlash.classList.remove('display-none');
-                fade(frontFlash);
+        if(useTimer){
+            timerInterval = setInterval(() => {
+                timerCountdown.classList.remove('display-none');
+                timePassed = timePassed += 1;
+                timeLeft = TIME_LIMIT - timePassed;
+                countdown = timeLeft;
+                if(timeLeft === 0){
+                    timerCountdown.classList.add('display-none');
+                    clearTimer();
+                    if(useFlash){
+                        if(useFrontCamera){
+                            frontFlash.classList.remove('display-none');
+                            fade(frontFlash);
+                        }
+                        else{
+                            //enable flash on rear camera
+                        }
+                    }
+                }
+            }, 1000);
+        } else {
+            if(useFlash){
+                if(useFrontCamera){
+                    frontFlash.classList.remove('display-none');
+                    fade(frontFlash);
+                }
+                else{
+                    //enable flash on rear camera
+                }
             }
         }
     };
 
     const fade = (element)  =>{
-        var op = 1;  // initial opacity
-        var timer = setInterval(function () {
+        let op = 1;  // initial opacity
+        let timer = setInterval(() => {
             if (op <= 0.1){
                 clearInterval(timer);
                 element.classList.add('display-none');
@@ -112,7 +150,7 @@
             element.style.opacity = op;
             element.style.filter = 'alpha(opacity=' + op * 100 + ")";
             op -= op * 0.1;
-        }, 100);
+        }, 70);
     };
 </script>
 
@@ -133,7 +171,7 @@
     <video class="camera__view camera__view--front" bind:this={video} width={width} height={height} playsinline autoplay muted></video>
 
     <!-- hidden div to show the timer countdown when timer is checked -->
-    <div class="timerCountdown"></div>
+    <div class="timerCountdown"><p class="countdown">{countdown}</p></div>
 
     <!-- hidden div to "fake"/evoke the flash when using the front camera -->
     <div class="frontFlash"></div>
@@ -217,6 +255,25 @@
         position: fixed;
         background-color: white;
         z-index: 200;
+    }
+
+    .timerCountdown{
+        width: 100%;
+        height: 100vh;
+        position: fixed;
+        z-index: 200;
+    }
+
+    .countdown{
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        margin: 0;
+        transform: translate(-50%, -50%);
+        font-family: 'Source Sans Pro', sans-serif;
+        font-weight: 700;
+        font-size: 100px;
+        color:white;
     }
 </style>
 
