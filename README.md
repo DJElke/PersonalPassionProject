@@ -20,9 +20,9 @@ This application will be a fun and alternative way for people who want to edit t
 - Routify + Svelte
 
 # Planning
-- Week 1: Research BASNet, U-2-Net, Python and iOS with these technologies. Making wireframes of the application.
-- Week 2: Design of the application and trying out the technologies with own images, making of of the application in Swift.
-- Week 3: Programming the core functionalities in Swift and applying BASNet/U-2-Net.
+- Week 1: Research BASNet, U-2-Net and Python with these technologies. Making wireframes of the application.
+- Week 2: Design of the application and trying out the technologies with own images, making of of the application in Routify/Svelte.
+- Week 3: Programming the core functionalities in Svelte and applying U-2-Net.
 - Week 4: Programming the adjustements of the images + preparing for the jury.
 - Week 5: Final touches + jury.
 
