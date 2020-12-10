@@ -52,9 +52,9 @@
     }
   
     .splashImg{
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 0;
-  animation: dash 10s linear alternate infinite;
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 0;
+        animation: dash 10s linear alternate infinite;
     }
   
     @keyframes dash {

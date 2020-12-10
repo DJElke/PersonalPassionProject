@@ -5,7 +5,7 @@
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    let video, stream, cameraView, flash, timer;
+    let video, stream, cameraView, flash, timer, frontFlash;
 
     let useFrontCamera = true;
     let useFlash = false;
@@ -43,7 +43,11 @@
 
         cameraView = document.querySelector('.camera__view');
         flash = document.querySelector('.flash');
+        frontFlash = document.querySelector('.frontFlash');
         timer = document.querySelector('.timer');
+
+        //hide the frontFlash div
+        frontFlash.classList.add('display-none');
 
         initializeCamera();
     });
@@ -85,8 +89,31 @@
 
     const setTimer = () => {
         useTimer = !useTimer;
+        // change icon's path
         timer.src = useTimer ? "/icons/stopwatch-white.svg" : "/icons/stopwatchset-light.svg";
-    }
+    };
+
+    const takePicture = () => {
+        if(useFlash || useTimer){
+            if(useFrontCamera){
+                frontFlash.classList.remove('display-none');
+                fade(frontFlash);
+            }
+        }
+    };
+
+    const fade = (element)  =>{
+        var op = 1;  // initial opacity
+        var timer = setInterval(function () {
+            if (op <= 0.1){
+                clearInterval(timer);
+                element.classList.add('display-none');
+            }
+            element.style.opacity = op;
+            element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+            op -= op * 0.1;
+        }, 100);
+    };
 </script>
 
 <main class="camera">
@@ -105,8 +132,17 @@
     <!-- show the camera output -->
     <video class="camera__view camera__view--front" bind:this={video} width={width} height={height} playsinline autoplay muted></video>
 
+    <!-- hidden div to show the timer countdown when timer is checked -->
+    <div class="timerCountdown"></div>
+
+    <!-- hidden div to "fake"/evoke the flash when using the front camera -->
+    <div class="frontFlash"></div>
+
+    <!-- hidden canvas element where we paste the taken picture -->
+    <canvas></canvas>
+
     <!-- button to take a picture -->
-    <button class="camera__trigger"><img class="camera__icon" src="/icons/camera-main.svg" alt="camera"/></button>
+    <button on:click={takePicture} class="camera__trigger"><img class="camera__icon" src="/icons/camera-main.svg" alt="camera"/></button>
 </main>
 
 <style>
@@ -175,12 +211,12 @@
         position:relative;
     }
 
-    .flash--disabled{
-        fill: white;
-    }
-
-    .flash--enabled{
-        fill: #9FCCEB;
+    .frontFlash{
+        width: 100%;
+        height: 100vh;
+        position: fixed;
+        background-color: white;
+        z-index: 200;
     }
 </style>
 
