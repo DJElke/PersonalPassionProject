@@ -1,11 +1,15 @@
 <script>
     import { onMount } from 'svelte';
+    import { url } from '@roxi/routify';
 
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    let video, stream, cameraView;
+    let video, stream, cameraView, flash, timer;
+
     let useFrontCamera = true;
+    let useFlash = false;
+    let useTimer = false;
 
     const constraints = {
         video: {
@@ -36,7 +40,11 @@
             alert("Camera API is not available in your browser");
             return;
         }
+
         cameraView = document.querySelector('.camera__view');
+        flash = document.querySelector('.flash');
+        timer = document.querySelector('.timer');
+
         initializeCamera();
     });
 
@@ -55,16 +63,6 @@
         } catch(e){
             alert('Could not access the camera');
         }
-        console.log(constraints.video.facingMode);
-    };
-
-    const changeFacingMode = () => {
-        if(useFrontCamera){
-            constraints.video.facingMode = "user";
-        }
-        else{
-            constraints.video.facingMode = "environment";
-        }
     };
 
     const flipCamera = () => {
@@ -78,17 +76,30 @@
         }
         initializeCamera();
     };
+
+    const triggerFlash = () => {
+        useFlash = !useFlash;
+        // change color of flash
+        flash.style.fill = useFlash ? "#9FCCEB" : "#FFFFFF";
+    };
+
+    const setTimer = () => {
+        useTimer = !useTimer;
+        timer.src = useTimer ? "/icons/stopwatch-white.svg" : "/icons/stopwatchset-light.svg";
+    }
 </script>
 
 <main class="camera">
     <!-- back button -->
-    <img class="backbtn" src="/icons/back-white.svg" alt="back"/>
+    <a href={$url('../feed/index')}><img class="backbtn" src="/icons/back-white.svg" alt="back"/></a>
 
     <!-- camera options -->
     <div class="camera__options">
         <img on:click={flipCamera} class="camera__options--icon" src="/icons/flip-white.svg" alt="flip"/>
-        <img class="camera__options--icon" src="/icons/flash-white.svg" alt="flash"/>
-        <img class="camera__options--icon" src="/icons/stopwatch-white.svg" alt="stopwatch"/>
+        <svg on:click={triggerFlash} class="camera__options--icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 192 192" style="enable-background:new 0 0 512 512" xml:space="preserve"><g>
+            <path class="flash" xmlns="http://www.w3.org/2000/svg" d="m155.109 74.028a4 4 0 0 0 -3.48-2.028h-52.4l8.785-67.123a4.023 4.023 0 0 0 -7.373-2.614l-63.724 111.642a4 4 0 0 0 3.407 6.095h51.617l-6.962 67.224a4.024 4.024 0 0 0 7.411 2.461l62.671-111.63a4 4 0 0 0 .048-4.027z" fill="#ffffff" data-original="#000000" style=""/>
+        </g></svg>
+        <img on:click={setTimer} class="camera__options--icon timer" src="/icons/stopwatch-white.svg" alt="stopwatch"/>
     </div>
 
     <!-- show the camera output -->
@@ -162,6 +173,14 @@
         padding-top: 12px;
         padding-bottom: 12px;
         position:relative;
+    }
+
+    .flash--disabled{
+        fill: white;
+    }
+
+    .flash--enabled{
+        fill: #9FCCEB;
     }
 </style>
 
