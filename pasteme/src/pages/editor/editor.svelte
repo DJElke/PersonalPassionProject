@@ -5,8 +5,8 @@
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    let video, stream, cameraView, flash, timer;
-    let frontFlash, timerCountdown, countdown;
+    let video, stream, cameraView, flash, timer, imageCapture;
+    let frontFlash, timerCountdown, countdown, showPicture;
 
     let useFrontCamera = true;
     let useFlash = false;
@@ -53,10 +53,12 @@
         frontFlash = document.querySelector('.frontFlash');
         timer = document.querySelector('.timer');
         timerCountdown = document.querySelector('.timerCountdown');
+        showPicture = document.querySelector('.showPicture');
 
         //hide the frontFlash, timerCountdown div
         frontFlash.classList.add('display-none');
         timerCountdown.classList.add('display-none');
+        showPicture.classList.add('display-none');
 
         initializeCamera();
     });
@@ -125,6 +127,13 @@
                             //enable flash on rear camera
                         }
                     }
+                    let track = stream.getVideoTracks()[0];
+                    imageCapture = new ImageCapture(track);
+                    imageCapture.takePhoto()
+                        .then(blob => createImageBitmap(blob))
+                        .then(imageBitmap => {
+                            drawCanvas(canvas, imageBitmap);
+                        });
                 }
             }, 1000);
         } else {
@@ -137,6 +146,13 @@
                     //enable flash on rear camera
                 }
             }
+            let track = stream.getVideoTracks()[0];
+            imageCapture = new ImageCapture(track);
+            imageCapture.takePhoto({fillLightMode: "flash"})
+                .then(blob => createImageBitmap(blob))
+                .then(imageBitmap => {
+                    drawCanvas(imageBitmap);
+                });
         }
     };
 
@@ -152,6 +168,16 @@
             op -= op * 0.1;
         }, 70);
     };
+
+    const drawCanvas = (img) => {
+        showPicture.classList.remove('display-none');
+        let ratio  = Math.min(showPicture.width / showPicture.width, showPicture.height / showPicture.height);
+        let x = (showPicture.width - showPicture.width * ratio) / 2;
+        let y = (showPicture.height - showPicture.height * ratio) / 2;
+        showPicture.getContext('2d').clearRect(0, 0, showPicture.width, showPicture.height);
+        showPicture.getContext('2d').drawImage(img, 0, 0, img.width, img.height,
+            x, y, img.width * ratio, img.height * ratio);
+    }
 </script>
 
 <main class="camera">
@@ -177,7 +203,7 @@
     <div class="frontFlash"></div>
 
     <!-- hidden canvas element where we paste the taken picture -->
-    <canvas></canvas>
+    <canvas class="showPicture" width={width} height={height}></canvas>
 
     <!-- button to take a picture -->
     <button on:click={takePicture} class="camera__trigger"><img class="camera__icon" src="/icons/camera-main.svg" alt="camera"/></button>
@@ -274,6 +300,13 @@
         font-weight: 700;
         font-size: 100px;
         color:white;
+    }
+
+    .showPicture{
+        width: 100%;
+        height: 100vh;
+        position: fixed;
+        z-index: 200;
     }
 </style>
 
