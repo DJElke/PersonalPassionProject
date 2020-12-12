@@ -2,12 +2,11 @@
     import { onMount } from 'svelte';
     import { redirect } from '@roxi/routify'
     import { url } from '@roxi/routify';
-    import { imageCapture } from '../../store.js';
+    import { useFrontCamera, imageCapture } from '../../store.js';
 
     let stream, cameraView, timer;
     let flashIcon, frontFlash, timerCountdown, countdown, cameraSensor;
 
-    let useFrontCamera = true;
     let useFlash = false;
     let useTimer = false;
 
@@ -75,7 +74,7 @@
     };
 
     const flipCamera = () => {
-        useFrontCamera = !useFrontCamera;
+        useFrontCamera.update(!useFrontCamera);
         if(useFrontCamera){
             cameraView.classList.add('camera__view--front');
             cameraView.classList.remove('camera__view--rear');
