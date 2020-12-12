@@ -4,11 +4,8 @@
     import { url } from '@roxi/routify';
     import { imageCapture } from '../../store.js';
 
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-
-    let video, stream, cameraView, timer;
-    let flashIcon, frontFlash, timerCountdown, countdown, showPicture;
+    let stream, cameraView, timer;
+    let flashIcon, frontFlash, timerCountdown, countdown, cameraSensor;
 
     let useFrontCamera = true;
     let useFlash = false;
@@ -45,17 +42,14 @@
     };
 
     onMount(async() => {
-        if(!"mediaDevices" in navigator || !"getUserMedia" in navigator.mediaDevices){
-            alert("Camera API is not available in your browser");
-            return;
-        }
-
         cameraView = document.querySelector('.camera__view');
+        cameraSensor = document.querySelector('.camera__sensor');
+
         flashIcon = document.querySelector('.flash');
         frontFlash = document.querySelector('.frontFlash');
+
         timer = document.querySelector('.timer');
         timerCountdown = document.querySelector('.timerCountdown');
-        showPicture = document.querySelector('.showPicture');
 
         //hide the frontFlash, timerCountdown div
         frontFlash.classList.add('display-none');
@@ -65,17 +59,16 @@
     });
 
     const initializeCamera = async() => {
-        stopVideoStream();
         constraints.video.facingMode = useFrontCamera ? "user" : "environment";
         try{
             stream = await navigator.mediaDevices.getUserMedia(constraints);
-            video.srcObject = stream;
+            cameraView.srcObject = stream;
 
-            if (!video.captureStream) {
-                video.captureStream = () => stream;
+            if (!cameraView.captureStream) {
+                cameraView.captureStream = () => stream;
             }
 
-            video.play();
+            cameraView.play();
         } catch(e){
             alert('Could not access the camera');
         }
@@ -156,8 +149,10 @@
     };
 
     const takeSnapshot = () => {
-        showPicture.getContext('2d').drawImage(video, 0, 0, width, height);
-        imageCapture.set(showPicture.toDataURL('image/webp'));
+        cameraSensor.width = cameraView.videoWidth;
+        cameraSensor.height = cameraView.videoHeight;
+        cameraSensor.getContext('2d').drawImage(cameraView, 0, 0);
+        imageCapture.set(cameraSensor.toDataURL('image/jpeg'));
         $redirect('./editor-step2');
     };
 </script>
@@ -165,6 +160,9 @@
 <main class="camera">
     <!-- back button -->
     <a href={$url('../feed/index')}><img class="backbtn" src="/icons/back-white.svg" alt="back"/></a>
+
+    <!-- hidden canvas element where we paste the taken picture -->
+    <canvas class="camera__sensor"></canvas>
 
     <!-- camera options -->
     <div class="camera__options">
@@ -176,7 +174,7 @@
     </div>
 
     <!-- show the camera output -->
-    <video class="camera__view camera__view--front" bind:this={video} width={width} height={height} playsinline autoplay muted></video>
+    <video class="camera__view camera__view--front" playsinline autoplay muted></video>
 
     <!-- hidden div to show the timer countdown when timer is checked -->
     <div class="timerCountdown"><p class="countdown">{countdown}</p></div>
@@ -184,20 +182,19 @@
     <!-- hidden div to "fake"/evoke the flash when using the front camera -->
     <div class="frontFlash"></div>
 
-    <!-- hidden canvas element where we paste the taken picture -->
-    <canvas class="showPicture" width={width} height={height}></canvas>
-
     <!-- button to take a picture -->
     <button on:click={takePicture} class="camera__trigger"><img class="camera__icon" src="/icons/camera-main.svg" alt="camera"/></button>
 </main>
 
 <style>
-    .camera, .camera__view{
+    .camera, .camera__view, .camera__sensor{
         position: fixed;
+        height: 100%;
+        width: 100%;
         object-fit: cover;
     }
 
-    .camera__view--front{
+    .camera__view--front, .camera__sensor{
         transform: scaleX(-1);
         filter: FlipH;
     }
@@ -282,12 +279,6 @@
         font-weight: 700;
         font-size: 100px;
         color:white;
-    }
-
-    .showPicture{
-        width: 100%;
-        height: 100vh;
-        position: fixed;
     }
 </style>
 

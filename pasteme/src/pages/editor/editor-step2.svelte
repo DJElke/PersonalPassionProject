@@ -1,44 +1,26 @@
 <script>
-    import { onMount } from 'svelte';
     import { imageCapture } from '../../store.js';
 
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-
-    let imageData, img, canvas;
+    let imageData;
 
     const unsubscribe = imageCapture.subscribe(value => {
         imageData = value;
     });
 
-    onMount(() => {
-        canvas = document.querySelector('.imgCanvas');
-        img = document.createElement('img');
-        img.src = imageData;
-        img.alt = "snapshot";
-        requestAnimationFrame(draw);
-    });
-
-    const draw = () => {
-        canvas.getContext('2d').drawImage(img,0,0);
-        requestAnimationFrame(draw);
-    }
-
-
+    console.log(imageData);
 </script>
 
 <main>
-    <canvas class="imgCanvas" width={width} height={height}></canvas>
+   <img src={imageData} alt ="snapshot" class="image__canvas">
 </main>
 
 <style>
-    .imgCanvas{
+    .image__canvas{
         position: fixed;
+        width: 100%;
+        height: 100%;
         object-fit: cover;
-    }
-
-    img{
-        object-fit: cover;
+        transform: scaleX(-1);
         filter: FlipH;
     }
 </style>
