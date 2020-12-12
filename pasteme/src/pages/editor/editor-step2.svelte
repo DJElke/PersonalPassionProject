@@ -35,6 +35,7 @@
     .imgCanvas{
         position: fixed;
         object-fit: cover;
+        filter: FlipH;
     }
 
     img{
