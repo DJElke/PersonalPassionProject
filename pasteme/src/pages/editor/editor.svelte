@@ -14,8 +14,6 @@
         frontCamera = value;
     });
 
-    console.log(frontCamera);
-
     // timer variables
     const TIME_LIMIT = 6;
     let timePassed = 0;
@@ -171,7 +169,7 @@
 
     <!-- camera options -->
     <div class="camera__options">
-        <img on:click={flipCamera} class="camera__options--icon" src="/icons/flip-white.svg" alt="flip"/>
+        <img on:click={flipCamera} class="camera__options--icon" src="/icons/switch-white.svg" alt="flip"/>
         <svg on:click={triggerFlash} class="camera__options--icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 192 192" style="enable-background:new 0 0 512 512" xml:space="preserve"><g>
             <path class="flash" xmlns="http://www.w3.org/2000/svg" d="m155.109 74.028a4 4 0 0 0 -3.48-2.028h-52.4l8.785-67.123a4.023 4.023 0 0 0 -7.373-2.614l-63.724 111.642a4 4 0 0 0 3.407 6.095h51.617l-6.962 67.224a4.024 4.024 0 0 0 7.411 2.461l62.671-111.63a4 4 0 0 0 .048-4.027z" fill="#ffffff" data-original="#000000" style=""/>
         </g></svg>
@@ -233,32 +231,6 @@
         width: 75%;
         height: auto;
     }
-
-    .camera__options{
-        right: 5%;
-        top: 5%;
-        width: 35px;
-        height: auto;
-        z-index: 9;
-        position: fixed;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        background-color: #112140; 
-        border-radius: 40px;
-        padding-top: 10px;
-        padding-bottom: 10px;
-    }
-
-    .camera__options--icon{
-        width: 75%;
-        height: auto;
-        padding-top: 12px;
-        padding-bottom: 12px;
-        position:relative;
-    }
-
     .frontFlash{
         width: 100%;
         height: 100vh;

@@ -1,15 +1,20 @@
 <script>
     import { useFrontCamera, imageCapture } from '../../store.js';
     import { url } from '@roxi/routify';
+    import { onMount } from 'svelte';
 
     let imageData, frontCamera;
 
-    imageCapture.subscribe(value => {
-        imageData = value;
-    });
+    onMount(() => {
+        //retrieve image data from store
+        imageCapture.subscribe(value => {
+            imageData = value;
+         });
 
-    useFrontCamera.subscribe(value => {
-        frontCamera = value;
+        //retrieve camera data from store
+        useFrontCamera.subscribe(value => {
+            frontCamera = value;
+        });
     });
 </script>
 
@@ -25,9 +30,11 @@
         <!-- bottom navigation -->
         <div class="bottom__wrapper">
             <div class="bottom__buttonblock1">
+                <!-- go back -->
                 <a href={$url('../editor/editor')} class="button button--whitebg">try again</a>
             </div>
             <div class="bottom__buttonblock2">
+                <!-- continue editing -->
                 <a href={$url('../editor/editor-step3')} class="button button--bluebg">continue</a>
             </div>
         </div>
