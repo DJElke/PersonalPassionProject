@@ -4,11 +4,17 @@
     import { url } from '@roxi/routify';
     import { useFrontCamera, imageCapture } from '../../store.js';
 
-    let stream, cameraView, timer;
+    let stream, cameraView, timer, frontCamera;
     let flashIcon, frontFlash, timerCountdown, countdown, cameraSensor;
 
     let useFlash = false;
     let useTimer = false;
+
+    useFrontCamera.subscribe(value => {
+        frontCamera = value;
+    });
+
+    console.log(frontCamera);
 
     // timer variables
     const TIME_LIMIT = 6;
@@ -58,7 +64,7 @@
     });
 
     const initializeCamera = async() => {
-        constraints.video.facingMode = useFrontCamera ? "user" : "environment";
+        constraints.video.facingMode = frontCamera ? "user" : "environment";
         try{
             stream = await navigator.mediaDevices.getUserMedia(constraints);
             cameraView.srcObject = stream;
@@ -74,8 +80,8 @@
     };
 
     const flipCamera = () => {
-        useFrontCamera.update(!useFrontCamera);
-        if(useFrontCamera){
+        useFrontCamera.set(!frontCamera);
+        if(frontCamera){
             cameraView.classList.add('camera__view--front');
             cameraView.classList.remove('camera__view--rear');
         } else {
@@ -123,7 +129,7 @@
 
     const toggleFlash = (frontFlash) => {
         if(useFlash){
-            if(useFrontCamera){
+            if(frontCamera){
                 frontFlash.classList.remove('display-none');
                 fade(frontFlash);
 
