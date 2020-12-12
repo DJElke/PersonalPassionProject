@@ -1,12 +1,14 @@
 <script>
     import { onMount } from 'svelte';
+    import { redirect } from '@roxi/routify'
     import { url } from '@roxi/routify';
+    import { imageCapture } from '../../store.js';
 
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    let video, stream, cameraView, flash, timer, imageCapture;
-    let frontFlash, timerCountdown, countdown, showPicture;
+    let video, stream, cameraView, timer;
+    let flashIcon, frontFlash, timerCountdown, countdown, showPicture;
 
     let useFrontCamera = true;
     let useFlash = false;
@@ -21,12 +23,12 @@
     const constraints = {
         video: {
             width: {
-                min: 1280,
+                min: 640,
                 ideal: 1920,
                 max: 2560,
             },
             height: {
-                min: 720,
+                min: 480,
                 ideal: 1080,
                 max: 1440
             },
@@ -49,7 +51,7 @@
         }
 
         cameraView = document.querySelector('.camera__view');
-        flash = document.querySelector('.flash');
+        flashIcon = document.querySelector('.flash');
         frontFlash = document.querySelector('.frontFlash');
         timer = document.querySelector('.timer');
         timerCountdown = document.querySelector('.timerCountdown');
@@ -58,7 +60,6 @@
         //hide the frontFlash, timerCountdown div
         frontFlash.classList.add('display-none');
         timerCountdown.classList.add('display-none');
-        showPicture.classList.add('display-none');
 
         initializeCamera();
     });
@@ -95,7 +96,7 @@
     const triggerFlash = () => {
         useFlash = !useFlash;
         // change color of flash
-        flash.style.fill = useFlash ? "#9FCCEB" : "#FFFFFF";
+        flashIcon.style.fill = useFlash ? "#9FCCEB" : "#FFFFFF";
     };
 
     const setTimer = () => {
@@ -106,7 +107,7 @@
 
     const clearTimer = () => {
         clearInterval(timerInterval);
-    }
+    };
 
     const takePicture = () => {
         if(useTimer){
@@ -118,41 +119,26 @@
                 if(timeLeft === 0){
                     timerCountdown.classList.add('display-none');
                     clearTimer();
-                    if(useFlash){
-                        if(useFrontCamera){
-                            frontFlash.classList.remove('display-none');
-                            fade(frontFlash);
-                        }
-                        else{
-                            //enable flash on rear camera
-                        }
-                    }
-                    let track = stream.getVideoTracks()[0];
-                    imageCapture = new ImageCapture(track);
-                    imageCapture.takePhoto()
-                        .then(blob => createImageBitmap(blob))
-                        .then(imageBitmap => {
-                            drawCanvas(canvas, imageBitmap);
-                        });
+                    toggleFlash(frontFlash);
+                    takeSnapshot ();
                 }
             }, 1000);
         } else {
-            if(useFlash){
-                if(useFrontCamera){
-                    frontFlash.classList.remove('display-none');
-                    fade(frontFlash);
-                }
-                else{
-                    //enable flash on rear camera
-                }
+            toggleFlash(frontFlash);
+            takeSnapshot ();
+        }
+    };
+
+    const toggleFlash = (frontFlash) => {
+        if(useFlash){
+            if(useFrontCamera){
+                frontFlash.classList.remove('display-none');
+                fade(frontFlash);
+
             }
-            let track = stream.getVideoTracks()[0];
-            imageCapture = new ImageCapture(track);
-            imageCapture.takePhoto({fillLightMode: "flash"})
-                .then(blob => createImageBitmap(blob))
-                .then(imageBitmap => {
-                    drawCanvas(imageBitmap);
-                });
+            else{
+                alert("We don't support flash");
+            } 
         }
     };
 
@@ -169,15 +155,11 @@
         }, 70);
     };
 
-    const drawCanvas = (img) => {
-        showPicture.classList.remove('display-none');
-        let ratio  = Math.min(showPicture.width / showPicture.width, showPicture.height / showPicture.height);
-        let x = (showPicture.width - showPicture.width * ratio) / 2;
-        let y = (showPicture.height - showPicture.height * ratio) / 2;
-        showPicture.getContext('2d').clearRect(0, 0, showPicture.width, showPicture.height);
-        showPicture.getContext('2d').drawImage(img, 0, 0, img.width, img.height,
-            x, y, img.width * ratio, img.height * ratio);
-    }
+    const takeSnapshot = () => {
+        showPicture.getContext('2d').drawImage(video, 0, 0);
+        imageCapture.set(showPicture.toDataURL('image/jpeg'));
+        $redirect('./editor-step2')
+    };
 </script>
 
 <main class="camera">
@@ -306,7 +288,6 @@
         width: 100%;
         height: 100vh;
         position: fixed;
-        z-index: 200;
     }
 </style>
 
