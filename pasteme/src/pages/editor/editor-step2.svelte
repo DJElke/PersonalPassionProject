@@ -35,10 +35,10 @@
     .imgCanvas{
         position: fixed;
         object-fit: cover;
-        filter: FlipH;
     }
 
     img{
         object-fit: cover;
+        filter: FlipH;
     }
 </style>
