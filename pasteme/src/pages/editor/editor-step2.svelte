@@ -22,7 +22,7 @@
     <div class="container">
         <!-- taken image -->
         {#if frontCamera}
-        <img src={imageData} alt ="snapshot" class="image__canvas image__canvas--front">
+            <img src={imageData} alt ="snapshot" class="image__canvas image__canvas--front">
         {:else}
             <img src={imageData} alt ="snapshot" class="image__canvas">
         {/if}

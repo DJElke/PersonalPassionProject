@@ -3,7 +3,9 @@
     import { url } from '@roxi/routify';
     import { imageCapture, modelImage } from '../../store.js';
 
-    let imageSrc, imageData;
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let canvas, imageData, img;
 
     onMount(() => {
         //retrieve image data from store
@@ -11,12 +13,19 @@
             imageData = value;
         });
 
-        const inputs = {
-            "image": imageData,
-            "threshold": 0.5
-        };
+        canvas = document.querySelector('.editor__canvas');
+        img = new Image();
+        img.src = imageData;
+        img.alt = "u2net";
+        img.classList.add('editor__image');
+        requestAnimationFrame(draw);
 
         //using the model
+        // const inputs = {
+        //     "image": imageData,
+        //     "threshold": 0.5
+        // };
+
         // fetch('http://localhost:8000/query', {
         //         method: 'POST',
         //         headers: {
@@ -34,12 +43,15 @@
         // modelImage.subscribe(value => {
         //     imageSrc = value;
         // })
-
-        imageSrc = "/images/modelTest.png";
     });
+
+    const draw = () => {
+        canvas.getContext('2d').drawImage(img, 0,0);
+        requestAnimationFrame(draw);
+    }
 </script>
 
-<main>
+<main class="editor">
    <!-- back button -->
    <a href={$url('../editor/editor-step2')}><img class="backbtn" src="/icons/back-white.svg" alt="back"/></a>
 
@@ -49,8 +61,8 @@
         <img class="camera__options--icon" src="/icons/flip-white.svg" alt="flip"/>
     </div>
 
-    <!-- image -->
-    <img src={imageSrc} alt="u2net" class="image__editor"/>
+    <!-- canvas -->
+    <canvas class="editor__canvas" width={width} height={height}></canvas>
 </main>
 
 <style>
@@ -60,10 +72,10 @@
         background-color: #5F8FC3;
     }
 
-    .image__editor{
+    .editor, .editor__canvas, .editor__image{
         position: fixed;
-        height: 100%;
         width: 100%;
+        height: 100%;
         object-fit: cover;
     }
 </style>
