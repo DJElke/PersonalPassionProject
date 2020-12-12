@@ -1,15 +1,19 @@
 <script>
     import { useFrontCamera, imageCapture } from '../../store.js';
 
-    let imageData;
+    let imageData, frontCamera;
 
-    const unsubscribe = imageCapture.subscribe(value => {
+    imageCapture.subscribe(value => {
         imageData = value;
+    });
+
+    useFrontCamera.subscribe(value => {
+        frontCamera = value;
     });
 </script>
 
 <main>
-    {#if useFrontCamera}
+    {#if frontCamera}
    <img src={imageData} alt ="snapshot" class="image__canvas image__canvas--front">
    {:else}
    <img src={imageData} alt ="snapshot" class="image__canvas">
