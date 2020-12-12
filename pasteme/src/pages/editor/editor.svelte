@@ -156,9 +156,9 @@
     };
 
     const takeSnapshot = () => {
-        showPicture.getContext('2d').drawImage(video, 0, 0);
-        imageCapture.set(showPicture.toDataURL('image/jpeg'));
-        $redirect('./editor-step2')
+        showPicture.getContext('2d').drawImage(video, 0, 0, width, height);
+        imageCapture.set(showPicture.toDataURL('image/webp'));
+        $redirect('./editor-step2');
     };
 </script>
 
