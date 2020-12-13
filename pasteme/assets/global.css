@@ -13,6 +13,16 @@
 	position: fixed;
 }
 
+.closebtn{
+	right: 5%;
+	top: 5%;
+	height: 20px;
+	width: 20px;
+	z-index: 9;
+	display: flex;
+	position: fixed;
+}
+
 .camera__options{
 	right: 5%;
 	top: 5%;

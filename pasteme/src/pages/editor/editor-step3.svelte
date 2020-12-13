@@ -1,12 +1,13 @@
 <script>
     import { onMount } from 'svelte';
+    import { redirect } from '@roxi/routify'
     import { url } from '@roxi/routify';
-    import { imageCapture, modelImage } from '../../store.js';
+    import { imageCapture, modelImage, finalEditImage } from '../../store.js';
 
     let width = window.innerWidth;
     let height = window.innerHeight;
 
-    let canvas, imageData, image, context;
+    let canvas, imageData, image, context, finalEdit;
 
     let useEraser = false;
     let flipHorizontal = false;
@@ -103,6 +104,12 @@
         context.fillCircle(x,y,radius);
     }
 
+    const goToBackgrounds = () => {
+        finalEdit = canvas.toDataURL('image/png');
+        finalEditImage.set(finalEdit);
+        $redirect('./editor-step4');
+    }
+
 </script>
 
 <main class="editor">
@@ -117,6 +124,9 @@
 
     <!-- canvas -->
     <canvas on:touchstart={eraseStarted} on:touchend={eraseEnded} on:touchmove={erase} width={width} height={height} class="editor__canvas editor__canvas--flip"></canvas>
+
+    <!-- continue to adding backgrounds -->
+    <button on:click={goToBackgrounds} class="button editor__button button--blue">continue</button>
 </main>
 
 <style>
@@ -145,5 +155,26 @@
     canvas{
         background-color: transparent;
         background: transparent;
+    }
+
+    .editor__button{
+        position: fixed;
+        bottom: 2%;
+        right: 5%;
+        border: 1px solid #9FCCEB;
+        box-sizing: border-box;
+        box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 30px;
+        padding: 5px 25px 5px 25px;
+        font-family: Source Sans Pro;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 24px;
+        line-height: 30px;
+    }
+
+    .button--blue{
+        background-color: #9FCCEB;
+        color: #FFFFFF;
     }
 </style>

@@ -31,11 +31,11 @@
         <div class="bottom__wrapper">
             <div class="bottom__buttonblock1">
                 <!-- go back -->
-                <a href={$url('../editor/editor')} class="button button--whitebg">try again</a>
+                <a href={$url('../editor/editor')} class="button button--white">try again</a>
             </div>
             <div class="bottom__buttonblock2">
                 <!-- continue editing -->
-                <a href={$url('../editor/editor-step3')} class="button button--bluebg">continue</a>
+                <a href={$url('../editor/editor-step3')} class="button button--blue">continue</a>
             </div>
         </div>
     </div>
@@ -98,14 +98,13 @@
         margin-right: auto;
     }
 
-    .button--whitebg{
+    .button--white{
         background-color: #FFFFFF;
         color: #9FCCEB;
     }
 
-    .button--bluebg{
+    .button--blue{
         background-color: #9FCCEB;
         color: #FFFFFF;
     }
-
 </style>
