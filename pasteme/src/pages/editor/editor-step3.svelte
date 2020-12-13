@@ -23,9 +23,27 @@
         image = new Image();
         image.src = imageData;
         image.alt = "u2net";
+        
         image.addEventListener('load', () => {
-            requestAnimationFrame(draw);
+            const ratio = image.width / image.height;
+            let newWidth = canvas.width;
+            let newHeight = newWidth / ratio;
+            if (newHeight < canvas.height) {
+                newHeight = canvas.height;
+                newWidth = newHeight * ratio;
+            }
+            const xOffset = newWidth > canvas.width ? (canvas.width - newWidth) / 2 : 0;
+            const yOffset = newHeight > canvas.height ? (canvas.height - newHeight) / 2 : 0;
+            context.drawImage(image, xOffset, yOffset, newWidth, newHeight);
+            //requestAnimationFrame(draw);
         });
+
+        context.fillCircle = (x,y,radius) => {
+            context.beginPath();
+            context.moveTo(x, y);
+            context.arc(x, y, radius, 0, Math.PI * 2, false);
+            context.fill();
+		}
 
         //using the model
         // const inputs = {
@@ -80,27 +98,24 @@
     const eraseStarted = (e) => {
         if(useEraser){
             canvas.isDrawing = true;
-            touchDown = true;
         }
     }
 
     const eraseEnded = () => {
         if(useEraser){
             canvas.isDrawing = false;
-            touchDown = false;
         }
     }
 
     const erase = (e) => {
-        if(touchDown){
-            let x,y,radius = "10px"; // Circle coordinates and radius.
-
-            context.fillStyle="#ffffff";// Your eraser color (not transparent)
-            context.globalCompositeOperation = 'destination-out';
-            context.beginPath();
-            context.arc(x,y,radius,0,Math.PI*2);
-            context.fill();
+        if(!canvas.isDrawing){
+			return;
         }
+        let x = e.pageX - canvas.offsetLeft;
+        let y = e.pageY - canvas.offsetTop;
+        let radius = 10;
+        context.globalCompositeOperation = 'destination-out';
+        context.fillCircle(x,y,radius);
     }
 
 </script>
@@ -132,6 +147,11 @@
         height: 100%;
         object-fit: cover;
         touch-action: none;
+    }
+
+    canvas{
+        background-color: transparent;
+        background: transparent;
     }
 
     .editor__image--flip{

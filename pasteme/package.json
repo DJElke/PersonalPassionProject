@@ -66,6 +66,7 @@
   },
   "dependencies": {
     "express": "^4.17.1",
+    "konva": "^7.2.1",
     "svelte-canvas": "^0.6.1"
   }
 }

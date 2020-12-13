@@ -154,7 +154,7 @@
         cameraSensor.width = cameraView.videoWidth;
         cameraSensor.height = cameraView.videoHeight;
         cameraSensor.getContext('2d').drawImage(cameraView, 0, 0);
-        imageCapture.set(cameraSensor.toDataURL('image/jpeg'));
+        imageCapture.set(cameraSensor.toDataURL('image/png'));
         $redirect('./editor-step2');
         stopVideoStream();
     };
