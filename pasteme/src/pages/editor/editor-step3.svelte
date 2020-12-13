@@ -5,7 +5,7 @@
 
     let width = window.innerWidth;
     let height = window.innerHeight;
-    let canvas, imageData, img;
+    let canvas, imageData, image;
 
     onMount(() => {
         //retrieve image data from store
@@ -14,10 +14,9 @@
         });
 
         canvas = document.querySelector('.editor__canvas');
-        img = new Image();
-        img.src = imageData;
-        img.alt = "u2net";
-        img.classList.add('editor__image');
+        image = document.createElement('img');
+        image.src = imageData;
+        image.alt = "u2net";
         requestAnimationFrame(draw);
 
         //using the model
@@ -46,7 +45,13 @@
     });
 
     const draw = () => {
-        canvas.getContext('2d').drawImage(img, 0,0);
+        let context = canvas.getContext('2d');
+        context.drawImage(image,0,0, image.width, height);
+        requestAnimationFrame(draw);
+    }
+
+    const flipImage = () => {
+        image.classList.add('flip');
         requestAnimationFrame(draw);
     }
 </script>
@@ -58,17 +63,18 @@
     <!-- camera options -->
     <div class="camera__options">
         <img class="camera__options--icon" src="/icons/eraser-white.svg" alt="eraser"/>
-        <img class="camera__options--icon" src="/icons/flip-white.svg" alt="flip"/>
+        <img on:click={flipImage} class="camera__options--icon" src="/icons/flip-white.svg" alt="flip"/>
     </div>
 
     <!-- canvas -->
+    <!-- <img alt="u2net" src={imageData}  class="editor__image editor__image--flip"/> -->
     <canvas class="editor__canvas" width={width} height={height}></canvas>
 </main>
 
 <style>
     main{
         height: 100vh;
-        width: auto;
+        width: 100vw;
         background-color: #5F8FC3;
     }
 
@@ -77,5 +83,10 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+    }
+
+    .editor__image--flip{
+        transform: scaleX(-1);
+        filter: FlipH;
     }
 </style>

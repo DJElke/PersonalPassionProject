@@ -157,6 +157,7 @@
         cameraSensor.getContext('2d').drawImage(cameraView, 0, 0);
         imageCapture.set(cameraSensor.toDataURL('image/jpeg'));
         $redirect('./editor-step2');
+        stopVideoStream();
     };
 </script>
 
@@ -164,7 +165,7 @@
     <!-- back button -->
     <a href={$url('../feed/index')}><img class="backbtn" src="/icons/back-white.svg" alt="back"/></a>
 
-    <!-- hidden canvas element where we paste the taken picture -->
+    <!-- hidden canvas element where we take the picture -->
     <canvas class="camera__sensor"></canvas>
 
     <!-- camera options -->
