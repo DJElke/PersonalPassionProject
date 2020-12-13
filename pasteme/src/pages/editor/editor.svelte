@@ -130,7 +130,6 @@
             if(frontCamera){
                 frontFlash.classList.remove('display-none');
                 fade(frontFlash);
-
             }
             else{
                 alert("We don't support flash");
