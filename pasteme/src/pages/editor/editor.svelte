@@ -2,9 +2,10 @@
     import { onMount } from 'svelte';
     import { redirect } from '@roxi/routify'
     import { url } from '@roxi/routify';
-    import { useFrontCamera, imageCapture } from '../../store.js';
+    import { useFrontCamera, imageCapture, 
+        isBackground, backgroundCapture } from '../../store.js';
 
-    let stream, cameraView, timer, frontCamera;
+    let stream, cameraView, timer, frontCamera, background;
     let flashIcon, frontFlash, timerCountdown, countdown, cameraSensor;
 
     let useFlash = false;
@@ -12,6 +13,10 @@
 
     useFrontCamera.subscribe(value => {
         frontCamera = value;
+    });
+
+    isBackground.subscribe(value => {
+        background = value;
     });
 
     // timer variables
@@ -154,8 +159,14 @@
         cameraSensor.width = cameraView.videoWidth;
         cameraSensor.height = cameraView.videoHeight;
         cameraSensor.getContext('2d').drawImage(cameraView, 0, 0);
-        imageCapture.set(cameraSensor.toDataURL('image/png'));
-        $redirect('./editor-step2');
+
+        if(!background){
+            imageCapture.set(cameraSensor.toDataURL('image/png'));
+            $redirect('./editor-step2');
+        } else {
+            backgroundCapture.set(cameraSensor.toDataURL('image/png'));
+            $redirect('./editor-step5');
+        }
         stopVideoStream();
     };
 </script>

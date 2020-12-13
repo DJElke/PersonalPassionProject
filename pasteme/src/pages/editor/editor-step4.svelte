@@ -1,5 +1,11 @@
 <script>
-    import { url } from '@roxi/routify';
+    import { redirect, url } from '@roxi/routify';
+    import { isBackground } from '../../store.js';
+
+    const openCamera = () => {
+        isBackground.set(true);
+        $redirect('./editor');
+    }
 </script>
 
 <main>
@@ -43,7 +49,7 @@
                 <br/>
                 camera roll
             </div>
-            <div class="option option--right">
+            <div on:click={openCamera} class="option option--right">
                 <img alt="camera" src="/icons/camera-main.svg" class="option--icon"/>
                 <br/>
                 take picture
