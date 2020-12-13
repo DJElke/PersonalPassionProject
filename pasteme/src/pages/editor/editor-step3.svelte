@@ -9,7 +9,7 @@
     let canvas, imageData, image, context;
 
     let useEraser = false;
-    let touchDown = false;
+    let flipHorizontal = false;
 
     onMount(() => {
         //retrieve image data from store
@@ -35,7 +35,6 @@
             const xOffset = newWidth > canvas.width ? (canvas.width - newWidth) / 2 : 0;
             const yOffset = newHeight > canvas.height ? (canvas.height - newHeight) / 2 : 0;
             context.drawImage(image, xOffset, yOffset, newWidth, newHeight);
-            //requestAnimationFrame(draw);
         });
 
         context.fillCircle = (x,y,radius) => {
@@ -70,23 +69,9 @@
         // })
     });
 
-    const draw = () => {
-        const ratio = image.width / image.height;
-        let newWidth = canvas.width;
-        let newHeight = newWidth / ratio;
-        if (newHeight < canvas.height) {
-            newHeight = canvas.height;
-            newWidth = newHeight * ratio;
-        }
-        const xOffset = newWidth > canvas.width ? (canvas.width - newWidth) / 2 : 0;
-        const yOffset = newHeight > canvas.height ? (canvas.height - newHeight) / 2 : 0;
-        context.drawImage(image, xOffset, yOffset, newWidth, newHeight);
-        requestAnimationFrame(draw);
-    }
-
     const flipImage = () => {
-        image.classList.add('flip');
-        requestAnimationFrame(draw);
+        flipHorizontal = !flipHorizontal
+        flipHorizontal ? canvas.classList.remove('editor__canvas--flip') : canvas.classList.add('editor__canvas--flip');
     }
 
     const enableErase = () => {
@@ -131,7 +116,7 @@
     </div>
 
     <!-- canvas -->
-    <canvas on:touchstart={eraseStarted} on:touchend={eraseEnded} on:touchmove={erase} class="editor__canvas" width={width} height={height}></canvas>
+    <canvas on:touchstart={eraseStarted} on:touchend={eraseEnded} on:touchmove={erase} width={width} height={height} class="editor__canvas editor__canvas--flip"></canvas>
 </main>
 
 <style>
@@ -149,13 +134,16 @@
         touch-action: none;
     }
 
+    .editor__canvas--flip{
+        -moz-transform: scale(-1, 1);
+        -webkit-transform: scale(-1, 1);
+        -o-transform: scale(-1, 1);
+        transform: scaleX(-1);
+        filter: FlipH;
+    }
+
     canvas{
         background-color: transparent;
         background: transparent;
-    }
-
-    .editor__image--flip{
-        transform: scaleX(-1);
-        filter: FlipH;
     }
 </style>
