@@ -23,6 +23,11 @@
 	position: fixed;
 }
 
+.closebtn--left{
+	left: 5%;
+	top: 5%;
+}
+
 .camera__options{
 	right: 5%;
 	top: 5%;

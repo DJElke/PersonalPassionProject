@@ -1,10 +1,15 @@
 <script>
     import { redirect, url } from '@roxi/routify';
-    import { isBackground } from '../../store.js';
+    import { isBackground, backgroundCapture } from '../../store.js';
 
     const openCamera = () => {
         isBackground.set(true);
         $redirect('./editor');
+    }
+
+    const chooseImage = (event) => {
+        backgroundCapture.set(event.target.src);
+        $redirect('./editor-step5');
     }
 </script>
 
@@ -14,6 +19,7 @@
         <!-- back button -->
         <a href={$url('../editor/editor-step3')}><img class="backbtn" src="/icons/back-white.svg" alt="back"/></a>
         <p class="title"> Choose background </p>
+        <!-- close button -->
         <a href={$url('../feed/index')}><img class="closebtn" src="/icons/close-white.svg" alt="close"/></a>
     </div>
 
@@ -23,7 +29,7 @@
         <div class="backgrounds">
             <p class="text">Your backgrounds</p>
             <div class="backgrounds--row">
-                <img alt="background" class="background--item" src="/images/Odielv2.png">
+                <img on:click={chooseImage} alt="background" class="background--item" src="/images/Odielv2.png">
                 <img alt="background" class="background--item" src="/images/Odielv2.png">
                 <img alt="background" class="background--item" src="/images/Odielv2.png">
                 <img alt="background" class="background--item" src="/images/Odielv2.png">
@@ -34,7 +40,7 @@
         <div class="backgrounds">
             <p class="text">Suggested backgrounds</p>
             <div class="backgrounds--row">
-                <img alt="background" class="background--item" src="/images/Odielv2.png">
+                <img on:click={chooseImage} alt="background" class="background--item" src="/images/Odielv2.png">
                 <img alt="background" class="background--item" src="/images/Odielv2.png">
                 <img alt="background" class="background--item" src="/images/Odielv2.png">
                 <img alt="background" class="background--item" src="/images/Odielv2.png">
