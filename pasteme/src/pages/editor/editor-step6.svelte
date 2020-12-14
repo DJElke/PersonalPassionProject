@@ -83,7 +83,7 @@
             activeShape = activeShape && activeShape.getName() === shape.getName() ? null: shape;
         });
 
-        stage.getContent().addEventListener('touchmove', (e) => {
+        stage.addEventListener('touchmove', (e) => {
             let touch1 = e.touches[0];
             let touch2 = e.touches[1];
 
@@ -112,7 +112,7 @@
             }
         });
 
-        stage.getContent().addEventListener('touchend', () => {
+        stage.addEventListener('touchend', () => {
             lastDist = 0;
         }, false);
     });
