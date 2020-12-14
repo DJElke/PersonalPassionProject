@@ -8,8 +8,11 @@
 
     let width = window.innerWidth;
     let height = window.innerHeight;
-    let editImage, backgroundImage;
-    let container, activeShape;
+    let editImage, backgroundImage,container;
+
+    let lastDist = 0;
+    let startScale = 1;
+    let activeShape = null;
 
     onMount(() => {
         //get the data from the 2 pictures
@@ -81,7 +84,7 @@
             activeShape = activeShape && activeShape.getName() === shape.getName() ? null: shape;
         });
 
-        stage.addEventListener('touchmove', (e) => {
+        stage.getContent().addEventListener('touchmove', (e) => {
             let touch1 = e.touches[0];
             let touch2 = e.touches[1];
 
@@ -109,6 +112,10 @@
             lastDist = dist;
             }
         });
+
+        stage.getContent().addEventListener('touchend', () => {
+            lastDist = 0;
+        }, false);
     });
 </script>
 
