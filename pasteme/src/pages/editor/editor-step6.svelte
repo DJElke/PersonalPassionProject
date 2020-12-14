@@ -39,7 +39,6 @@
         bImg.addEventListener('load', () => {
             let background = new Konva.Image({
                 image: bImg,
-                width: bImg.width,
                 height: height,
                 draggable: true,
                 dragBoundFunc: function (pos) {
