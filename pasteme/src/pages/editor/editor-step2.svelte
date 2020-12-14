@@ -3,7 +3,7 @@
     import { redirect, url } from '@roxi/routify';
     import { onMount } from 'svelte';
 
-    let imageData, frontCamera;
+    let imageData, frontCamera, model;
 
     onMount(() => {
         //retrieve image data from store
@@ -24,14 +24,15 @@
             "threshold": 0.5
         };
 
-        fetch('http://localhost:8000/query', {
-                method: 'POST',
-                headers: {
-                Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(inputs)
-            })
+        fetch("https://u-2-net-dd85c5bc.hosted-models.runwayml.cloud/v1/query", {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": "Bearer Tr+RNPgXRZti1qmvIVYTjA==",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(inputs)
+        })
         .then(response => response.json())
         .then(outputs => {
             const { image } = outputs;
