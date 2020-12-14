@@ -4,10 +4,12 @@
     import { url } from '@roxi/routify'
     import Konva from 'konva';
 
+    Konva.hitOnDragEnabled = true;
+
     let width = window.innerWidth;
     let height = window.innerHeight;
     let editImage, backgroundImage;
-    let container;
+    let container, activeShape;
 
     onMount(() => {
         //get the data from the 2 pictures
@@ -23,6 +25,7 @@
             container: container,
             width: width,
             height: height,
+            draggable: false,
         });
 
         //add the background and make it only draggable on the x-axis
@@ -42,6 +45,7 @@
                         y: this.absolutePosition().y,
                     };
                 },
+                name: 'background',
             });
             backgroundLayer.add(background);
             backgroundLayer.batchDraw();
@@ -63,6 +67,7 @@
                 width: eImg.width,
                 height: eImg.heigth,
                 draggable: true,
+                name: 'editImage',
             });
             editImageLayer.add(edit);
             editImageLayer.batchDraw();
@@ -70,6 +75,40 @@
         eImg.src = editImage;
         eImg.classList.add('object-fit');
         eImg.alt = "edit";
+
+        stage.on('tap', (e) => {
+            let shape = e.target;
+            activeShape = activeShape && activeShape.getName() === shape.getName() ? null: shape;
+        });
+
+        stage.addEventListener('touchmove', (e) => {
+            let touch1 = e.touches[0];
+            let touch2 = e.touches[1];
+
+            if (touch1 && touch2 && activeShape) {
+                let dist = getDistance(
+                {
+                    x: touch1.clientX,
+                    y: touch1.clientY,
+                },
+                {
+                    x: touch2.clientX,
+                    y: touch2.clientY,
+                }
+            );
+
+            if (!lastDist) {
+              lastDist = dist;
+            }
+
+            var scale = (activeShape.scaleX() * dist) / lastDist;
+
+            activeShape.scaleX(scale);
+            activeShape.scaleY(scale);
+            activeShape.getName() === "background" ? backgroundLayer.draw() : editImageLayer.draw();
+            lastDist = dist;
+            }
+        });
     });
 </script>
 
