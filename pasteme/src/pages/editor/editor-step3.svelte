@@ -1,8 +1,7 @@
 <script>
     import { onMount } from 'svelte';
-    import { redirect } from '@roxi/routify'
-    import { url } from '@roxi/routify';
-    import { imageCapture, modelImage, finalEditImage } from '../../store.js';
+    import { redirect, url } from '@roxi/routify'
+    import { modelImage, finalEditImage } from '../../store.js';
 
     let width = window.innerWidth;
     let height = window.innerHeight;
@@ -22,7 +21,7 @@
         context = canvas.getContext('2d');
 
         image = new Image();
-        image.src = imageData;
+        image.src = imageData != null ? imageData : "/images/modelTest.png";
         image.alt = "u2net";
         
         image.addEventListener('load', () => {

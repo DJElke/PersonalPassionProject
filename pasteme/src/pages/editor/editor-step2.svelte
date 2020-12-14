@@ -3,7 +3,7 @@
     import { redirect, url } from '@roxi/routify';
     import { onMount } from 'svelte';
 
-    let imageData, frontCamera, model;
+    let imageData, frontCamera;
 
     onMount(() => {
         //retrieve image data from store

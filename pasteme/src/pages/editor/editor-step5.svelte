@@ -1,7 +1,7 @@
 <script>
     import { backgroundCapture } from '../../store.js';
     import { onMount } from 'svelte';
-    import { redirect, url } from '@roxi/routify';
+    import { url } from '@roxi/routify';
 
     let backgroundImage;
 
