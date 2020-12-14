@@ -1,6 +1,6 @@
 <script>
-    import { useFrontCamera, imageCapture } from '../../store.js';
-    import { url } from '@roxi/routify';
+    import { useFrontCamera, imageCapture, modelImage } from '../../store.js';
+    import { redirect, url } from '@roxi/routify';
     import { onMount } from 'svelte';
 
     let imageData, frontCamera;
@@ -16,6 +16,29 @@
             frontCamera = value;
         });
     });
+
+    const renderImage = () => {
+        //using the model
+        const inputs = {
+            "image": imageData,
+            "threshold": 0.5
+        };
+
+        fetch('http://localhost:8000/query', {
+                method: 'POST',
+                headers: {
+                Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(inputs)
+            })
+        .then(response => response.json())
+        .then(outputs => {
+            const { image } = outputs;
+            modelImage.set(image);
+            $redirect('./editor-step3');
+        });
+    }
 </script>
 
 <main>
@@ -35,7 +58,7 @@
             </div>
             <div class="bottom__buttonblock2">
                 <!-- continue editing -->
-                <a href={$url('../editor/editor-step3')} class="button button--blue">continue</a>
+                <a on:click={renderImage} class="button button--blue">continue</a>
             </div>
         </div>
     </div>

@@ -14,7 +14,7 @@
 
     onMount(() => {
         //retrieve image data from store
-        imageCapture.subscribe(value => {
+        modelImage.subscribe(value => {
             imageData = value;
         });
 
@@ -44,30 +44,6 @@
             context.arc(x, y, radius, 0, Math.PI * 2, false);
             context.fill();
 		}
-
-        //using the model
-        // const inputs = {
-        //     "image": imageData,
-        //     "threshold": 0.5
-        // };
-
-        // fetch('http://localhost:8000/query', {
-        //         method: 'POST',
-        //         headers: {
-        //         Accept: 'application/json',
-        //                 'Content-Type': 'application/json',
-        //         },
-        //         body: JSON.stringify(inputs)
-        //     })
-        // .then(response => response.json())
-        // .then(outputs => {
-        //     const { image } = outputs;
-        //     modelImage.set(image);
-        // });
-
-        // modelImage.subscribe(value => {
-        //     imageSrc = value;
-        // })
     });
 
     const flipImage = () => {
