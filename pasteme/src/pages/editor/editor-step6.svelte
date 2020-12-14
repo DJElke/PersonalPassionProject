@@ -57,7 +57,6 @@
             bLayer.batchDraw();
         });
         bImg.src = backgroundImage;
-        bImg.classList.add('object-fit');
         bImg.alt = "background";
 
         eLayer = new Konva.Layer();
@@ -76,7 +75,6 @@
             eLayer.batchDraw();
         });
         eImg.src = editImage;
-        eImg.classList.add('object-fit');
         eImg.alt = "edit";
 
         stage.on('tap', (e) => {
