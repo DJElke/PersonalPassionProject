@@ -5,14 +5,12 @@
     import Konva from 'konva';
 
     Konva.hitOnDragEnabled = true;
+    Konva.captureTouchEventsEnabled = true;
 
     let width = window.innerWidth;
     let height = window.innerHeight;
-    let editImage, backgroundImage,container;
-
-    let lastDist = 0;
-    let startScale = 1;
-    let activeShape = null;
+    let stage, editImage, backgroundImage, container, activeShape, tr;
+    let bLayer, eLayer;
 
     onMount(() => {
         //get the data from the 2 pictures
@@ -24,16 +22,22 @@
             backgroundImage = value;
         });
 
-        let stage = new Konva.Stage({
+        stage = new Konva.Stage({
             container: container,
             width: width,
             height: height,
-            draggable: false,
+            x: width / 2,
+            y: height / 2,
+            offset: {
+                x: width / 2,
+                y: height / 2,
+            },
+            draggable: true,
         });
 
-        //add the background and make it only draggable on the x-axis
-        const backgroundLayer = new Konva.Layer();
-        stage.add(backgroundLayer);
+        
+        bLayer = new Konva.Layer();
+        stage.add(bLayer);
 
         let bImg = new Image();
         bImg.addEventListener('load', () => {
@@ -49,73 +53,67 @@
                 },
                 name: 'background',
             });
-            backgroundLayer.add(background);
-            backgroundLayer.batchDraw();
+            bLayer.add(background);
+            bLayer.batchDraw();
         });
         bImg.src = backgroundImage;
         bImg.classList.add('object-fit');
         bImg.alt = "background";
 
-        //add the final edit image
-        const editImageLayer = new Konva.Layer();
-        stage.add(editImageLayer);
+        eLayer = new Konva.Layer();
+        stage.add(eLayer);
 
         let eImg = new Image();
         eImg.addEventListener('load', () => {
             let edit = new Konva.Image({
-                x: 50,
-                y: 50,
                 image: eImg,
-                width: eImg.width,
-                height: eImg.heigth,
+                width: 300,
+                height: 600,
                 draggable: true,
                 name: 'editImage',
             });
-            editImageLayer.add(edit);
-            editImageLayer.batchDraw();
+            eLayer.add(edit);
+            eLayer.batchDraw();
         });
         eImg.src = editImage;
         eImg.classList.add('object-fit');
         eImg.alt = "edit";
 
         stage.on('tap', (e) => {
-            let shape = e.target;
-            activeShape = activeShape && activeShape.getName() === shape.getName() ? null: shape;
-        });
-
-        stage.addEventListener('touchmove', (e) => {
-            let touch1 = e.touches[0];
-            let touch2 = e.touches[1];
-
-            if (touch1 && touch2 && activeShape) {
-                let dist = getDistance(
-                {
-                    x: touch1.clientX,
-                    y: touch1.clientY,
-                },
-                {
-                    x: touch2.clientX,
-                    y: touch2.clientY,
-                }
-            );
-
-            if (!lastDist) {
-              lastDist = dist;
-            }
-
-            var scale = (activeShape.scaleX() * dist) / lastDist;
-
-            activeShape.scaleX(scale);
-            activeShape.scaleY(scale);
-            activeShape.getName() === "background" ? backgroundLayer.draw() : editImageLayer.draw();
-            lastDist = dist;
-            }
-        });
-
-        stage.addEventListener('touchend', () => {
-            lastDist = 0;
-        }, false);
+            activeShape = e.target;
+            console.log(activeShape);
+            activeShape.attrs.name === 'editImage' ? addTransformer(activeShape, eLayer) : removeTransformers(activeShape);
+        })
     });
+
+    const addTransformer = (konvaNode, layer) => {
+        tr = new Konva.Transformer({
+            nodes: [konvaNode],
+            keepRatio: true,
+            borderDash: [4, 3],
+            anchorCornerRadius: 5,
+            anchorStrokeWidth: 15,
+            borderStrokeWidth: 1,
+            padding:16,
+            opacity:1,
+            enabledAnchors: ['top-left', 'bottom-right'],
+            anchorFill: '#112140',
+            anchorStroke: '#112140',
+            borderStroke: '#112140',
+            rotationSnaps:[0, 90, 180, 270],
+        });
+        layer.add(tr);
+    };
+
+    const removeTransformers = (konvaNode) => {
+        let transformers = stage.find('Transformer');
+        transformers.forEach(transform => {
+            transform.attrs.opacity = 0,
+            transform.detach();
+        });
+    }
+
+
 </script>
 
 <main>
@@ -125,7 +123,6 @@
     <!-- camera options -->
     <div class="camera__options">
         <img class="camera__options--icon eraser" src="/icons/eraser-white.svg" alt="eraser"/>
-        <img class="camera__options--icon" src="/icons/flip-white.svg" alt="flip"/>
         <img class="camera__options--icon" src="/icons/settings-white.svg" alt="settings"/>
     </div>
    
@@ -137,6 +134,7 @@
     main{
         width: 100vw;
         height: 100vh;
+        overflow: hidden;
     }
 
     .object-fit {
