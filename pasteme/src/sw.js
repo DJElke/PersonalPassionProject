@@ -7,8 +7,6 @@ import { precacheAndRoute, matchPrecache } from 'workbox-precaching';
 import { ExpirationPlugin } from 'workbox-expiration';
 import { RoutifyPlugin, freshCacheData } from '@roxi/routify/workbox-plugin'
 
-
-
 /**********
  * CONFIG *
  **********/
@@ -16,6 +14,7 @@ import { RoutifyPlugin, freshCacheData } from '@roxi/routify/workbox-plugin'
 const entrypointUrl = '__app.html' // entrypoint
 const fallbackImage = '404.svg'
 const files = self.__WB_MANIFEST // files matching globDirectory and globPattern in rollup.config.js
+
 
 const externalAssetsConfig = () => ({
   cacheName: 'external',
@@ -26,7 +25,8 @@ const externalAssetsConfig = () => ({
     new ExpirationPlugin({
       maxEntries: 50, // last used entries will be purged when we hit this limit
       purgeOnQuotaError: true // purge external assets on quota error
-    })]
+    })
+  ]
 })
 
 

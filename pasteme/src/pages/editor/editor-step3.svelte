@@ -21,7 +21,7 @@
         context = canvas.getContext('2d');
 
         image = new Image();
-        image.src = imageData != null ? imageData : "/images/modelTest.png";
+        image.src = imageData != null ? imageData : "/images/cat.png";
         image.alt = "u2net";
         
         image.addEventListener('load', () => {

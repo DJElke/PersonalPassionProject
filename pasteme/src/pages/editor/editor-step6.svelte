@@ -1,7 +1,7 @@
 <script>
     import { backgroundCapture, finalEditImage, pasteMeIMAGE } from '../../store.js';
     import { onMount } from 'svelte';
-    import { redirect, url } from '@roxi/routify'
+    import { context, redirect, url } from '@roxi/routify'
     import Konva from 'konva';
 
     Konva.hitOnDragEnabled = true;
@@ -9,7 +9,7 @@
 
     let width = window.innerWidth;
     let height = window.innerHeight;
-    let stage, editImage, backgroundImage, container, activeShape, eCanvas, tr, settingsicon,
+    let stage, editImage, backgroundImage, container, activeShape, eCanvas, eImg, tr, settingsicon,
     settingsWrapper, slider, sliderValue, sliderWrapper, filter, button;
     let bLayer, eLayer;
 
@@ -94,9 +94,9 @@
         let canvas = document.createElement('canvas');
         canvas.width = eLayer.width();
         canvas.height = eLayer.height();
-        let context = canvas.getContext('2d');
+        context = canvas.getContext('2d');
 
-        let eImg = new Image();
+        eImg = new Image();
         eImg.addEventListener('load', () => {
             let edit = new Konva.Image({
                 image: eImg,
@@ -105,8 +105,8 @@
                 draggable: true,
                 name: 'editImage',
             });
-            edit.cache();
-            edit.filters([Konva.Filters.Brighten, Konva.Filters.Enhance, Konva.Filters.Contrast]);
+            edit.cache()
+            edit.filters([Konva.Filters.Brighten, Konva.Filters.Contrast, Konva.Filters.Enhance]);
             context.drawImage(edit.image(), 0,0);
             eLayer.draw();
         });
@@ -115,8 +115,10 @@
 
         eCanvas = new Konva.Image({
             image: canvas,
-            width: eLayer.width(),
-            height: eLayer.height(),
+            width: stage.width(),
+            height: stage.height(),
+            x: 80,
+            y: 80,
             draggable: true,
             name: 'editImage',
         });
@@ -169,14 +171,14 @@
             context.beginPath();
 
             var localPos = {
-                x: lastPointerPosition.x - eCanvas.x(),
-                y: lastPointerPosition.y - eCanvas.y()
+                x: lastPointerPosition.x - eLayer.x(),
+                y: lastPointerPosition.y - eLayer.y()
             };
             context.moveTo(localPos.x, localPos.y);
             var pos = stage.getPointerPosition();
             localPos = {
-                x: pos.x - eCanvas.x(),
-                y: pos.y - eCanvas.y()
+                x: pos.x - eLayer.x(),
+                y: pos.y - eLayer.y()
             };
             context.lineTo(localPos.x, localPos.y);
             context.closePath();
@@ -188,8 +190,9 @@
 
         stage.on('tap', (e) => {
             activeShape = e.target;
+            console.log(activeShape);
             activeShape.attrs.name === 'editImage' ? addTransformer(activeShape, eLayer) : removeTransformers(eLayer);
-        });        
+        });     
     });
 
     // function to calculate crop values from source image, its visible size and a crop strategy
@@ -279,10 +282,10 @@
     const setBrightnessSlider = () => {
         sliderWrapper.classList.remove('display-none');
         settingsWrapper.classList.add('display-none');
-        rangeMin = -1;
-        rangeMax = 1;
-        rangeStep = 0.05;
-        rangeValue = 0;
+        rangeMin = 0;
+        rangeMax = 200;
+        rangeStep = 10;
+        rangeValue = 100;
         filter = 'brightness';
     }
 
@@ -357,6 +360,7 @@
                 brightness = 0;
                 rangeValue = brightness;
                 activeShape.brightness(brightness);
+                eLayer.batchDraw();
             }
             if(filter === 'contrast'){
                 contrast = 0;
@@ -374,7 +378,6 @@
 
     const enableEraser = () => {
         useEraser = !useEraser;
-        console.log(useEraser);
         if(activeShape != null){
             useEraser ? eCanvas.draggable(false) : eCanvas.draggable(true);
         }
