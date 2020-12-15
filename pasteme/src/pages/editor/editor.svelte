@@ -156,8 +156,8 @@
     };
 
     const takeSnapshot = () => {
-        cameraSensor.width = window.innerWidth;
-        cameraSensor.height = window.innerHeight;
+        cameraSensor.width = cameraView.videoWidth;
+        cameraSensor.height = cameraView.videoHeight;
         cameraSensor.getContext('2d').drawImage(cameraView, 0, 0);
 
         if(!background){
