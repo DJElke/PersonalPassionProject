@@ -2,6 +2,9 @@
     import { redirect, url } from '@roxi/routify';
     import { isBackground, backgroundCapture } from '../../store.js';
 
+    let myBackgrounds = ["/images/obama.jpeg", "/images/buda.jpg", "/images/angel.jpg"];
+    let sugBackgrounds = ["/images/whitehouse.png", "/images/kardashians.jpg", "/images/space.png"];
+
     const openCamera = () => {
         isBackground.set(true);
         $redirect('./editor');
@@ -29,22 +32,23 @@
         <div class="backgrounds">
             <p class="text">Your backgrounds</p>
             <div class="backgrounds--row">
-                <img on:click={chooseImage} alt="background" class="background--item" src="/images/Odielv2.png">
-                <img alt="background" class="background--item" src="/images/Odielv2.png">
-                <img alt="background" class="background--item" src="/images/Odielv2.png">
-                <img alt="background" class="background--item" src="/images/Odielv2.png">
-                <img alt="background" class="background--item" src="/images/Odielv2.png">
+                {#each myBackgrounds as item}
+                    <img on:click={chooseImage} alt="background" class="background--item" src={item}>
+                {/each}
             </div>
         </div>
         <!-- suggested backgrounds (fixed) -->
         <div class="backgrounds">
             <p class="text">Suggested backgrounds</p>
             <div class="backgrounds--row">
-                <img on:click={chooseImage} alt="background" class="background--item" src="/images/Odielv2.png">
+                {#each sugBackgrounds as item}
+                    <img on:click={chooseImage} alt="background" class="background--item" src={item}>
+                {/each}
+                
+                <!-- <img alt="background" class="background--item" src="/images/Odielv2.png">
                 <img alt="background" class="background--item" src="/images/Odielv2.png">
                 <img alt="background" class="background--item" src="/images/Odielv2.png">
-                <img alt="background" class="background--item" src="/images/Odielv2.png">
-                <img alt="background" class="background--item" src="/images/Odielv2.png">
+                <img alt="background" class="background--item" src="/images/Odielv2.png"> -->
             </div>
         </div>
 

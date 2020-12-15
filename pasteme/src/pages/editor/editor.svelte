@@ -173,7 +173,11 @@
 
 <main class="camera">
     <!-- back button -->
+    {#if !background}
     <a href={$url('../feed/index')}><img class="backbtn" src="/icons/back-white.svg" alt="back"/></a>
+    {:else}
+    <a href={$url('../editor/editor-step4')}><img class="backbtn" src="/icons/back-white.svg" alt="back"/></a>
+    {/if}
 
     <!-- hidden canvas element where we take the picture -->
     <canvas class="camera__sensor"></canvas>
