@@ -1,5 +1,6 @@
 <script>
     import { pasteMeIMAGE } from '../../store.js';
+    import { url } from '@roxi/routify'
     import { onMount } from 'svelte';
 
     let image
@@ -10,35 +11,13 @@
         });
     });
 
-    const saveImage = () => {
-        if (navigator.canShare && navigator.canShare({ files: filesArray })) {
-        navigator.share({
-            files: image,
-            title: 'PasteMe',
-            text: 'PasteMePicture.',
-        })
-        .then(() => console.log('Share was successful.'))
-        .catch((error) => alert('Sharing failed', error));
-        } else {
-            alert(`Your system doesn't support sharing files.`);
-        }
-    }
-
 </script>
 
 <main>
+    <p>to save, keep pressing the image</p>
     <img src={image} alt ="image"/>
-
-    <div class="bottom__wrapper">
-        <div class="bottom__buttonblock1">
-            <!-- save image -->
-            <a on:click={saveImage} class="button button--white">save</a>
-        </div>
-        <div class="bottom__buttonblock2">
-            <!-- save local -->
-            <a class="button button--blue">back to feed</a>
-        </div>
-    </div>
+    <!-- continue to adding backgrounds -->
+    <a href={$url('../feed/index')} class="button editor__button button--blue">back to feed</a>
 </main>
 
 <style>
@@ -47,30 +26,14 @@
         height: 90%;
     }
 
-    .bottom__wrapper{
-        position: fixed;
-        bottom:0;
-        width: 100%;
+    p{
+        background-color: #112140;
+        color: white;
         height: 10%;
-        background-color: white;
-        overflow: hidden;
+        width: 100%;
+        margin: 0;
+        padding: 1px;
         text-align: center;
-    }
-
-    .bottom__buttonblock1{
-        height: 100%;
-        width: 50%;
-        float: left;
-        display: flex;
-        align-items: center;
-    }
-
-    .bottom__buttonblock2{
-        height: 100%;
-        width: 50%;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
     }
 
     .button{
@@ -88,14 +51,26 @@
         margin-right: auto;
     }
 
-    .button--white{
-        background-color: #FFFFFF;
-        color: #9FCCEB;
+    .editor__button{
+        position: fixed;
+        bottom: 2%;
+        right: 5%;
+        border: 1px solid #9FCCEB;
+        box-sizing: border-box;
+        box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 30px;
+        padding: 5px 25px 5px 25px;
+        font-family: Source Sans Pro;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 24px;
+        line-height: 30px;
     }
 
     .button--blue{
         background-color: #9FCCEB;
         color: #FFFFFF;
     }
+
 </style>
 

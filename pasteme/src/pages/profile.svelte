@@ -1,3 +1,10 @@
 <main>
-    <h1>profile</h1>
+    <img src="/images/profile.svg" alt="profile">
 </main>
+
+<style>
+    img{
+        width: 100%;
+        height: auto;
+    }
+</style>
