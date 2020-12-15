@@ -9,10 +9,25 @@
 
     let width = window.innerWidth;
     let height = window.innerHeight;
-    let stage, editImage, backgroundImage, container, activeShape, tr;
+    let stage, editImage, backgroundImage, container, activeShape, tr, 
+    settingsWrapper, slider, sliderValue, sliderWrapper, filter, button;
     let bLayer, eLayer;
 
+    let useSettings = false;
+    let rangeMin, rangeMax, rangeStep, rangeValue = 0;
+
+    let brightness = 0;
+    let exposure = 0;
+    let contrast = 20;
+    let newB, newE, newC;
+
     onMount(() => {
+        settingsWrapper = document.querySelector('.options__wrapper');
+        settingsWrapper.classList.add('display-none');
+        sliderWrapper = document.querySelector('.slider__wrapper');
+        slider = document.querySelector('.slider');
+        button = document.querySelector('.button');
+
         //get the data from the 2 pictures
         finalEditImage.subscribe(value => {
             editImage = value;
@@ -32,10 +47,9 @@
                 x: width / 2,
                 y: height / 2,
             },
-            draggable: true,
+            draggable: false,
         });
 
-        
         bLayer = new Konva.Layer();
         stage.add(bLayer);
 
@@ -47,7 +61,7 @@
                 draggable: true,
                 dragBoundFunc: function (pos) {
                 return {
-                        x: pos.x,
+                        x: pos.x ,
                         y: this.absolutePosition().y,
                     };
                 },
@@ -57,6 +71,7 @@
             bLayer.batchDraw();
         });
         bImg.src = backgroundImage;
+        bImg.classList.add('object-fit');
         bImg.alt = "background";
 
         eLayer = new Konva.Layer();
@@ -66,22 +81,24 @@
         eImg.addEventListener('load', () => {
             let edit = new Konva.Image({
                 image: eImg,
-                width: 300,
-                height: 600,
+                width: eImg.width,
+                height: eImg.height,
                 draggable: true,
                 name: 'editImage',
             });
+            edit.cache();
+            edit.filters([Konva.Filters.Brighten, Konva.Filters.Enhance, Konva.Filters.Contrast]);
             eLayer.add(edit);
             eLayer.batchDraw();
         });
         eImg.src = editImage;
         eImg.alt = "edit";
+    
 
         stage.on('tap', (e) => {
             activeShape = e.target;
-            console.log(activeShape);
-            activeShape.attrs.name === 'editImage' ? addTransformer(activeShape, eLayer) : removeTransformers(activeShape);
-        })
+            activeShape.attrs.name === 'editImage' ? addTransformer(activeShape, eLayer) : removeTransformers(eLayer);
+        })        
     });
 
     const addTransformer = (konvaNode, layer) => {
@@ -103,14 +120,119 @@
         layer.add(tr);
     };
 
-    const removeTransformers = (konvaNode) => {
-        let transformers = stage.find('Transformer');
+    const removeTransformers = (layer) => {
+        let transformers = layer.find('Transformer');
         transformers.forEach(transform => {
             transform.attrs.opacity = 0,
             transform.detach();
         });
     }
 
+    const showSettings = () => {
+        useSettings = !useSettings;
+        useSettings ? settingsWrapper.classList.remove('display-none') : settingsWrapper.classList.add('display-none');
+        useSettings ? button.classList.add('display-none') : button.classList.remove('display-none');
+        if(useSettings){
+            settingsWrapper.classList.add('fade-in');
+            
+        }
+    };
+
+    const setBrightnessSlider = () => {
+        sliderWrapper.classList.remove('display-none');
+        settingsWrapper.classList.add('display-none');
+        rangeMin = -1;
+        rangeMax = 1;
+        rangeStep = 0.05;
+        rangeValue = 0;
+        filter = 'brightness';
+    }
+
+    const setContrastSlider = () => {
+        sliderWrapper.classList.remove('display-none');
+        settingsWrapper.classList.add('display-none');
+        minRange = -100;
+        maxRange = 100;
+        rangeStep = 1;
+        rangeValue = 0;
+        filter = 'contrast';
+    }
+
+    const setExposureSlider = () => {
+        sliderWrapper.classList.remove('display-none');
+        settingsWrapper.classList.add('display-none');
+        minRange = -1;
+        maxRange = 1;
+        rangeStep = 0.01;
+        rangeValue = 20;
+        filter = 'exposure'
+    }
+
+    const updateSliderValueAndFilter = () => {
+        sliderValue = parseFloat(slider.value);
+        if(activeShape != null){
+            if(filter === 'brightness'){
+                newB = sliderValue;
+                activeShape.brightness(sliderValue);
+            }
+            if(filter === 'contrast'){
+                newC = sliderValue;
+                activeShape.contrast(sliderValue);
+            }
+            if(filter === 'exposure'){
+                newE = sliderValue;
+                activeShape.enhance(sliderValue);
+            }
+            eLayer.batchDraw();
+        }
+    }
+
+    const addFilter = () => {
+        sliderWrapper.classList.add('display-none');
+        settingsWrapper.classList.remove('display-none');
+        if(activeShape != null){
+            if(filter === 'brightness'){
+                brightness = newB;
+                rangeValue = brightness;
+                activeShape.brightness(brightness);
+            }
+            if(filter === 'contrast'){
+                contrast = newC;
+                rangeValue = contrast;
+                activeShape.contrast(contrast);
+            }
+            if(filter === 'exposure'){
+                exposure = newE;
+                rangeValue = exposure;
+                activeShape.enhance(exposure);
+            }
+            eLayer.batchDraw();
+        }
+
+    }
+
+    const removeFilter = () => {
+        sliderWrapper.classList.add('display-none');
+        settingsWrapper.classList.remove('display-none');
+        if(activeShape != null){
+            if(filter === 'brightness'){
+                brightness = 0;
+                rangeValue = brightness;
+                activeShape.brightness(brightness);
+            }
+            if(filter === 'contrast'){
+                contrast = 0;
+                rangeValue = contrast;
+                activeShape.contrast(contrast);
+            }
+            if(filter === 'exposure'){
+                exposure = 20;
+                rangeValue = exposure;
+                activeShape.enhance(exposure);
+            }
+            eLayer.batchDraw();
+        }
+    }
 
 </script>
 
@@ -121,11 +243,40 @@
     <!-- camera options -->
     <div class="camera__options">
         <img class="camera__options--icon eraser" src="/icons/eraser-white.svg" alt="eraser"/>
-        <img class="camera__options--icon" src="/icons/settings-white.svg" alt="settings"/>
+        <img on:click={showSettings} class="camera__options--icon" src="/icons/settings-white.svg" alt="settings"/>
     </div>
    
     <!-- KonvaJS canvas for editor -->
     <div bind:this={container}></div>
+
+    <!-- lighting options -->
+    <div class="options__wrapper">
+            <div on:click={setBrightnessSlider} class="option">
+                <img class="option--icon" src="/icons/brightness-white.svg" alt="eraser"/>
+                <br/>
+                brightness
+            </div>
+            <div on:click={setExposureSlider} class="option">
+                <img class="option--icon" src="/icons/exposure-white.svg" alt="settings"/>
+                <br/>
+                exposure
+            </div>
+            <div on:click={setContrastSlider} class="option">
+                <img class="option--icon" src="/icons/contrast-white.svg" alt="settings"/>
+                <br/>
+                contrast
+            </div>
+    </div>
+
+    <!-- slider wrapper -->
+    <div class="slider__wrapper display-none">
+        <img on:click={removeFilter} class="slider--item slider--icon" src="/icons/close-white.svg" alt="close"/>
+        <input on:input={updateSliderValueAndFilter} class="slider--item slider" type="range" min={rangeMin} max={rangeMax} step={rangeStep} value={rangeValue}/>
+        <img on:click={addFilter} class="slider--item slider--icon slider--iconcheck" src="/icons/checkmark-white.svg" alt="check"/>
+    </div>
+
+    <!-- continue to adding backgrounds -->
+    <button class="button editor__button button--blue">continue</button>
 </main>
 
 <style>
@@ -136,6 +287,132 @@
     }
 
     .object-fit {
+        position: fixed;
+        width: 100%;
+        height: 100%;
         object-fit: cover;
+    }
+
+    .options__wrapper{
+        width: 100%;
+        height: auto;
+        background-color: #112140;
+        color: white;
+        font-family: Source Sans Pro;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 15px;
+        line-height: 18px;
+        border-radius: 30px 30px 0px 0px;
+        position: fixed;
+        bottom: 0;
+        margin: 0;
+        scroll-behavior: smooth;
+        overflow-x: scroll;
+        overflow-y: hidden;
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    .slider__wrapper{
+        width: 100%;
+        height: auto;
+        background-color: #112140;
+        color: white;
+        position: fixed;
+        bottom: 0;
+        margin: 0;
+        border-radius: 30px 30px 0px 0px;
+    }
+
+    @keyframes fadeIn{
+       to{
+           opacity: 1;
+       }
+    }
+  
+    .fade-in{
+        opacity: 0;
+        animation: fadeIn 3s ease-in forwards;
+    }
+
+    .option {
+        display: inline-block;
+        align-items: center;
+        height: 100%;
+        padding: 20px;
+    }
+
+    .option--icon{
+        width: 40px;
+        height: 40px;
+    }
+
+    .slider--icon{
+        width: 20px;
+        height: 20px;
+    }
+
+    .slider--iconcheck{
+        width: 25px;
+        height: 30px;
+    }
+
+    input[type="range"]{
+        width: 65%;
+        height: auto;
+    }
+
+    input[type=range]{
+        -webkit-appearance: none;
+    }
+
+    input[type=range]::-webkit-slider-runnable-track {
+        height: .35em;
+        background: white;
+        border: none;
+        border-radius: 25%;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        border: none;
+        height: 1.1em;
+        width: 1.1em;
+        border-radius: 50%;
+        background: #BDD5E7;
+        margin-top: -4px;
+    }
+
+    input[type=range]:focus {
+        outline: none;
+    }
+
+    .slider--item{
+        padding: 15px;
+        display: inline-block;
+        align-items: center;
+        height: 100%;
+    }
+
+    .editor__button{
+        position: fixed;
+        bottom: 2%;
+        right: 5%;
+        border: 1px solid #9FCCEB;
+        box-sizing: border-box;
+        box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 30px;
+        padding: 5px 25px 5px 25px;
+        font-family: Source Sans Pro;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 24px;
+        line-height: 30px;
+    }
+
+    .button--blue{
+        background-color: #9FCCEB;
+        color: #FFFFFF;
     }
 </style>
