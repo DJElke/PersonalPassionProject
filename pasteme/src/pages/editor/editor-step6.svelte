@@ -60,7 +60,7 @@
             let background = new Konva.Image({
                 image: bImg,
                 width: bImg.width,
-                heigth: stage.height(),
+                heigth: bImg.height,
                 draggable: true,
                 dragBoundFunc: function (pos) {
                 return {
