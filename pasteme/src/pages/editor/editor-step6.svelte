@@ -1,7 +1,7 @@
 <script>
-    import { backgroundCapture, finalEditImage } from '../../store.js';
+    import { backgroundCapture, finalEditImage, pasteMeIMAGE } from '../../store.js';
     import { onMount } from 'svelte';
-    import { url } from '@roxi/routify'
+    import { redirect, url } from '@roxi/routify'
     import Konva from 'konva';
 
     Konva.hitOnDragEnabled = true;
@@ -9,11 +9,12 @@
 
     let width = window.innerWidth;
     let height = window.innerHeight;
-    let stage, editImage, backgroundImage, container, activeShape, tr, 
+    let stage, editImage, backgroundImage, container, activeShape, tr, settingsicon,
     settingsWrapper, slider, sliderValue, sliderWrapper, filter, button;
     let bLayer, eLayer;
 
     let useSettings = false;
+    let firstClickSettings = true;
     let rangeMin, rangeMax, rangeStep, rangeValue = 0;
 
     let brightness = 0;
@@ -22,6 +23,7 @@
     let newB, newE, newC;
 
     onMount(() => {
+        settingsicon = document.querySelector('.settings');
         settingsWrapper = document.querySelector('.options__wrapper');
         settingsWrapper.classList.add('display-none');
         sliderWrapper = document.querySelector('.slider__wrapper');
@@ -57,7 +59,8 @@
         bImg.addEventListener('load', () => {
             let background = new Konva.Image({
                 image: bImg,
-                height: height,
+                width: bImg.width,
+                height: bImg.height,
                 draggable: true,
                 dragBoundFunc: function (pos) {
                 return {
@@ -130,12 +133,16 @@
 
     const showSettings = () => {
         useSettings = !useSettings;
-        useSettings ? settingsWrapper.classList.remove('display-none') : settingsWrapper.classList.add('display-none');
-        useSettings ? button.classList.add('display-none') : button.classList.remove('display-none');
-        if(useSettings){
-            settingsWrapper.classList.add('fade-in');
-            
+        if(!firstClickSettings){
+            useSettings ? settingsWrapper.classList.remove('display-none') : settingsWrapper.classList.add('display-none');
+            useSettings ? button.classList.add('display-none') : button.classList.remove('display-none');
+            settingsicon.src = useSettings ? "/icons/settings-light.svg" : "/icons/settings-white.svg";
+        }else{
+            settingsicon.src = "/icons/settings-light.svg" ;
+            useSettings ? settingsWrapper.classList.remove('display-none') : settingsWrapper.classList.add('display-none');
+            useSettings ? button.classList.add('display-none') : button.classList.remove('display-none');
         }
+        firstClickSettings = false;
     };
 
     const setBrightnessSlider = () => {
@@ -234,6 +241,11 @@
         }
     }
 
+    const finalizeEdit = () => {
+        pasteMeIMAGE.set(stage.toDataURL());
+        $redirect('./editor-final');
+    };
+
 </script>
 
 <main>
@@ -243,7 +255,7 @@
     <!-- camera options -->
     <div class="camera__options">
         <img class="camera__options--icon eraser" src="/icons/eraser-white.svg" alt="eraser"/>
-        <img on:click={showSettings} class="camera__options--icon" src="/icons/settings-white.svg" alt="settings"/>
+        <img on:click={showSettings} class="camera__options--icon settings" src="/icons/settings-white.svg" alt="settings"/>
     </div>
    
     <!-- KonvaJS canvas for editor -->
@@ -276,7 +288,7 @@
     </div>
 
     <!-- continue to adding backgrounds -->
-    <button class="button editor__button button--blue">continue</button>
+    <button on:click={finalizeEdit} class="button editor__button button--blue">continue</button>
 </main>
 
 <style>

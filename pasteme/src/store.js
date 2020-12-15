@@ -6,3 +6,5 @@ export const backgroundCapture = writable();
 export const modelImage = writable();
 export const finalEditImage = writable();
 export const isBackground = writable(false);
+
+export const pasteMeIMAGE = writable();
