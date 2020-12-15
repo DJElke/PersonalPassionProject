@@ -59,8 +59,8 @@
         bImg.addEventListener('load', () => {
             let background = new Konva.Image({
                 image: bImg,
-                width: width,
-                heigth: height,
+                width: bImg.width,
+                heigth: stage.height(),
                 draggable: true,
                 dragBoundFunc: function (pos) {
                 return {
@@ -74,6 +74,7 @@
             bLayer.batchDraw();
         });
         bImg.src = backgroundImage;
+        bImg.height = height;
         bImg.classList.add('object-fit');
         bImg.alt = "background";
 
