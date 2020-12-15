@@ -44,6 +44,8 @@
         object-fit: cover;
         bottom: 0;
         border-radius: 30px 30px 0px 0px;
+        transform: scaleX(-1);
+        filter: FlipH;
     }
 
     .title__wrapper{

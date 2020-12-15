@@ -98,7 +98,7 @@
     </div>
 
     <!-- canvas -->
-    <canvas on:touchstart={eraseStarted} on:touchend={eraseEnded} on:touchmove={erase} class="editor__canvas editor__canvas--flip" width={width} height={height}></canvas>
+    <canvas on:touchstart={eraseStarted} on:touchend={eraseEnded} on:touchmove={erase} class="editor__canvas" width={width} height={height}></canvas>
 
     <!-- continue to adding backgrounds -->
     <button on:click={goToBackgrounds} class="button editor__button button--blue">continue</button>

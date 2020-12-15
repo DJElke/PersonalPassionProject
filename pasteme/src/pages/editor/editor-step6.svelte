@@ -9,10 +9,11 @@
 
     let width = window.innerWidth;
     let height = window.innerHeight;
-    let stage, editImage, backgroundImage, container, activeShape, tr, settingsicon,
+    let stage, editImage, backgroundImage, container, activeShape, eCanvas, tr, settingsicon,
     settingsWrapper, slider, sliderValue, sliderWrapper, filter, button;
     let bLayer, eLayer;
 
+    let useEraser = false;
     let useSettings = false;
     let firstClickSettings = true;
     let rangeMin, rangeMax, rangeStep, rangeValue = 0;
@@ -54,65 +55,46 @@
 
         bLayer = new Konva.Layer();
         stage.add(bLayer);
-
-        Konva.Image.fromURL(
-        backgroundImage,
-        (img) => {
-          img.setAttrs({
-            width: stage.width(),
-            height: stage.height(),
-            name: 'image',
-            dragBoundFunc: function (pos) {
-                return {
-                        x: pos.x ,
-                        y: this.absolutePosition().y,
-                    };
-                },
-            draggable: false,
-          });
-          bLayer.add(img);
-          // apply default left-top crop
-          applyCrop('center-middle');
-          bLayer.draw();
-
-          img.on('transform', () => {
-            // reset scale on transform
-            img.setAttrs({
-              scaleX: 1,
-              scaleY: 1,
-              width: img.width() * img.scaleX(),
-              height: img.height() * img.scaleY(),
-            });
-            applyCrop(img.getAttr('lastCropUsed'));
-          });
-        }
-      );
-
-        // let bImg = new Image();
-        // bImg.addEventListener('load', () => {
-        //     let background = new Konva.Image({
-        //         image: bImg,
-        //         width: bImg.width,
-        //         heigth: bImg.height,
-        //         draggable: true,
-        //         dragBoundFunc: function (pos) {
-        //         return {
-        //                 x: pos.x ,
-        //                 y: this.absolutePosition().y,
-        //             };
-        //         },
-        //         name: 'background',
-        //     });
-        //     bLayer.add(background);
-        //     bLayer.batchDraw();
-        // });
-        // bImg.src = backgroundImage;
-        // bImg.height = height;
-        // bImg.classList.add('object-fit');
-        // bImg.alt = "background";
-
         eLayer = new Konva.Layer();
         stage.add(eLayer);
+
+        Konva.Image.fromURL(
+            backgroundImage,
+            (img) => {
+            img.setAttrs({
+                width: stage.width(),
+                height: stage.height(),
+                name: 'image',
+                dragBoundFunc: function (pos) {
+                    return {
+                            x: pos.x ,
+                            y: this.absolutePosition().y,
+                        };
+                    },
+                draggable: false,
+            });
+            bLayer.add(img);
+            // apply default left-top crop
+            applyCrop('center-middle');
+            bLayer.draw();
+
+            img.on('transform', () => {
+                // reset scale on transform
+                img.setAttrs({
+                scaleX: 1,
+                scaleY: 1,
+                width: img.width() * img.scaleX(),
+                height: img.height() * img.scaleY(),
+                });
+                applyCrop(img.getAttr('lastCropUsed'));
+            });
+            }
+        );
+
+        let canvas = document.createElement('canvas');
+        canvas.width = eLayer.width();
+        canvas.height = eLayer.height();
+        let context = canvas.getContext('2d');
 
         let eImg = new Image();
         eImg.addEventListener('load', () => {
@@ -125,17 +107,89 @@
             });
             edit.cache();
             edit.filters([Konva.Filters.Brighten, Konva.Filters.Enhance, Konva.Filters.Contrast]);
-            eLayer.add(edit);
-            eLayer.batchDraw();
+            context.drawImage(edit.image(), 0,0);
+            eLayer.draw();
         });
         eImg.src = editImage;
         eImg.alt = "edit";
+
+        eCanvas = new Konva.Image({
+            image: canvas,
+            width: eLayer.width(),
+            height: eLayer.height(),
+            draggable: true,
+            name: 'editImage',
+        });
+        eLayer.add(eCanvas);
+        stage.draw();
+
+        //Now we need to get access to context element
+        context.strokeStyle = "#0099ee";
+        context.lineJoin = "round";
+        context.lineWidth = 20;
     
+        let isPaint = false;
+        let lastPointerPosition;
+        let mode = 'eraser';
+
+        stage.on('touchstart mousedown', function() {
+            if(!useEraser){
+                return;
+            }
+            isPaint = true;
+            lastPointerPosition = stage.getPointerPosition();
+        });
+
+        stage.on('touchend mouseup', function() {
+            if(!useEraser){
+                return;
+            }
+            isPaint = false;
+        });
+
+        // and core function - drawing
+        stage.on('touchmove mousemove', function() {
+            if(!useEraser){
+                return
+            }
+            if (!isPaint) {
+                return;
+            }
+
+            if (mode === 'brush') {
+                context.globalCompositeOperation = 'source-over';
+            }
+            if (mode === 'eraser') {
+                context.globalCompositeOperation = 'destination-out';
+            }
+            context.shadowBlur = 15;
+            context.shadowColor = '#000000'; // inset border color
+            context.shadowOffsetX = -1;
+            context.shadowOffsetY = -1;
+            context.beginPath();
+
+            var localPos = {
+                x: lastPointerPosition.x - eCanvas.x(),
+                y: lastPointerPosition.y - eCanvas.y()
+            };
+            context.moveTo(localPos.x, localPos.y);
+            var pos = stage.getPointerPosition();
+            localPos = {
+                x: pos.x - eCanvas.x(),
+                y: pos.y - eCanvas.y()
+            };
+            context.lineTo(localPos.x, localPos.y);
+            context.closePath();
+            context.stroke();
+
+            lastPointerPosition = pos;
+            eLayer.draw();
+            });
 
         stage.on('tap', (e) => {
             activeShape = e.target;
             activeShape.attrs.name === 'editImage' ? addTransformer(activeShape, eLayer) : removeTransformers(eLayer);
-        })        
+        });        
     });
 
     // function to calculate crop values from source image, its visible size and a crop strategy
@@ -318,7 +372,19 @@
         }
     }
 
+    const enableEraser = () => {
+        useEraser = !useEraser;
+        console.log(useEraser);
+        if(activeShape != null){
+            useEraser ? eCanvas.draggable(false) : eCanvas.draggable(true);
+        }
+    };
+
     const finalizeEdit = () => {
+        let transformers = stage.find('Transformer');
+            transformers.forEach(transform => {
+            transform.destroy();
+        });
         pasteMeIMAGE.set(stage.toDataURL());
         $redirect('./editor-final');
     };
@@ -331,7 +397,7 @@
     
     <!-- camera options -->
     <div class="camera__options">
-        <img class="camera__options--icon eraser" src="/icons/eraser-white.svg" alt="eraser"/>
+        <img on:click={enableEraser} class="camera__options--icon eraser" src="/icons/eraser-white.svg" alt="eraser"/>
         <img on:click={showSettings} class="camera__options--icon settings" src="/icons/settings-white.svg" alt="settings"/>
     </div>
    
