@@ -125,7 +125,7 @@
         stage.draw();
 
         //Now we need to get access to context element
-        context = canvas.getContext('2d');
+        let context = canvas.getContext('2d');
         context.strokeStyle = "#0099ee";
         context.lineJoin = "round";
         context.lineWidth = 20;
