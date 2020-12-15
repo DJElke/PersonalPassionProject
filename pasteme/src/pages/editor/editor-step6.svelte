@@ -94,7 +94,6 @@
         let canvas = document.createElement('canvas');
         canvas.width = eLayer.width();
         canvas.height = eLayer.height();
-        context = canvas.getContext('2d');
 
         eImg = new Image();
         eImg.addEventListener('load', () => {
@@ -126,6 +125,7 @@
         stage.draw();
 
         //Now we need to get access to context element
+        context = canvas.getContext('2d');
         context.strokeStyle = "#0099ee";
         context.lineJoin = "round";
         context.lineWidth = 20;
