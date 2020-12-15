@@ -55,28 +55,61 @@
         bLayer = new Konva.Layer();
         stage.add(bLayer);
 
-        let bImg = new Image();
-        bImg.addEventListener('load', () => {
-            let background = new Konva.Image({
-                image: bImg,
-                width: bImg.width,
-                heigth: bImg.height,
-                draggable: true,
-                dragBoundFunc: function (pos) {
+        Konva.Image.fromURL(
+        backgroundImage,
+        (img) => {
+          img.setAttrs({
+            width: stage.width(),
+            height: stage.height(),
+            name: 'image',
+            dragBoundFunc: function (pos) {
                 return {
                         x: pos.x ,
                         y: this.absolutePosition().y,
                     };
                 },
-                name: 'background',
+            draggable: false,
+          });
+          bLayer.add(img);
+          // apply default left-top crop
+          applyCrop('center-middle');
+          bLayer.draw();
+
+          img.on('transform', () => {
+            // reset scale on transform
+            img.setAttrs({
+              scaleX: 1,
+              scaleY: 1,
+              width: img.width() * img.scaleX(),
+              height: img.height() * img.scaleY(),
             });
-            bLayer.add(background);
-            bLayer.batchDraw();
-        });
-        bImg.src = backgroundImage;
-        bImg.height = height;
-        bImg.classList.add('object-fit');
-        bImg.alt = "background";
+            applyCrop(img.getAttr('lastCropUsed'));
+          });
+        }
+      );
+
+        // let bImg = new Image();
+        // bImg.addEventListener('load', () => {
+        //     let background = new Konva.Image({
+        //         image: bImg,
+        //         width: bImg.width,
+        //         heigth: bImg.height,
+        //         draggable: true,
+        //         dragBoundFunc: function (pos) {
+        //         return {
+        //                 x: pos.x ,
+        //                 y: this.absolutePosition().y,
+        //             };
+        //         },
+        //         name: 'background',
+        //     });
+        //     bLayer.add(background);
+        //     bLayer.batchDraw();
+        // });
+        // bImg.src = backgroundImage;
+        // bImg.height = height;
+        // bImg.classList.add('object-fit');
+        // bImg.alt = "background";
 
         eLayer = new Konva.Layer();
         stage.add(eLayer);
@@ -104,6 +137,49 @@
             activeShape.attrs.name === 'editImage' ? addTransformer(activeShape, eLayer) : removeTransformers(eLayer);
         })        
     });
+
+    // function to calculate crop values from source image, its visible size and a crop strategy
+    const getCrop = (image, size, clipPosition = 'center-middle') => {
+        const width = size.width;
+        const height = size.height;
+        const aspectRatio = width / height;
+
+        let newWidth;
+        let newHeight;
+
+        const imageRatio = image.width / image.height;
+
+        if (aspectRatio >= imageRatio) {
+          newWidth = image.width;
+          newHeight = image.width / aspectRatio;
+        } else {
+          newWidth = image.height * aspectRatio;
+          newHeight = image.height;
+        }
+
+        let x = (image.width - newWidth) / 2;
+        let y = (image.height - newHeight) / 2;
+
+        return {
+          cropX: x,
+          cropY: y,
+          cropWidth: newWidth,
+          cropHeight: newHeight,
+        };
+    }
+
+    // function to apply crop
+    const applyCrop = (pos) => {
+        const img = bLayer.findOne('.image');
+        img.setAttr('lastCropUsed', pos);
+        const crop = getCrop(
+          img.image(),
+          { width: img.width(), height: img.height() },
+          pos
+        );
+        img.setAttrs(crop);
+        bLayer.draw();
+      }
 
     const addTransformer = (konvaNode, layer) => {
         tr = new Konva.Transformer({
