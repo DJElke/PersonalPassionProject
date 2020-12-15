@@ -46,11 +46,6 @@
                 {#each sugBackgrounds as item}
                     <img on:click={chooseImage} alt="background" class="background--item" src={item}>
                 {/each}
-                
-                <!-- <img alt="background" class="background--item" src="/images/Odielv2.png">
-                <img alt="background" class="background--item" src="/images/Odielv2.png">
-                <img alt="background" class="background--item" src="/images/Odielv2.png">
-                <img alt="background" class="background--item" src="/images/Odielv2.png"> -->
             </div>
         </div>
 
