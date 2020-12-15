@@ -10,6 +10,8 @@
         $redirect('./editor');
     }
 
+    console.log("hallo");
+
     const chooseImage = (event) => {
         backgroundCapture.set(event.target.src);
         $redirect('./editor-step5');
