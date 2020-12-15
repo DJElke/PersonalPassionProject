@@ -1,5 +1,5 @@
 <script>
-
+    let pastes = ["/images/pasteme1.png", "/images/pasteme2.png", "/images/pasteme3.png", "/images/pasteme4.png", "/images/pasteme5.png"]
 </script>
   
   <main>
@@ -7,11 +7,10 @@
     <div class="feed">
         <p class="feedTitle">PasteMe</p>
         <div class="grid">
-            <li class="vertical"><img src="/images/Odielv2.png" alt="placeholder"/></li>
-            <li><img src="/images/Odielv2.png" alt="placeholder"/></li>
-            <li class="vertical"><img src="/images/Odielv2.png" alt="placeholder"/></li>
-            <li class="landscape"><img src="/images/Odielv2.png" alt="placeholder"/></li>
-            <li ><img src="/images/Odielv2.png" alt="placeholder"/></li>    
+            <li class="vertical"><img src="/images/pasteme1.png" alt="placeholder"/></li>
+            <li><img src="/images/pasteme2.png" alt="placeholder"/></li>
+            <li class="vertical"><img src="/images/pasteme3.png" alt="placeholder"/></li>
+            <li><img src="/images/pasteme4.png" alt="placeholder"/></li>    
         </div>
     </div>
   </main>
